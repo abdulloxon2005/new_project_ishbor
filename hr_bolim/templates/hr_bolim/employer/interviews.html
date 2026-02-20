@@ -1,0 +1,35 @@
+{% extends 'hr_bolim/base_with_sidebar.html' %}
+{% load static %}
+
+{% block sub_title %}Intervyular{% endblock %}
+
+{% block employer_content %}
+<div class="text-left">
+    <h2 class="text-xl font-semibold text-gray-900 mb-6">Rejalashtirilgan intervyular</h2>
+    <div class="bg-white rounded-lg shadow">
+        <div class="divide-y divide-gray-200">
+            {% for iv in interviews %}
+            <div class="p-6 hover:bg-gray-50">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="font-medium text-gray-900">{{ iv.application.candidate.get_full_name|default:iv.application.candidate.email }}</p>
+                        <p class="text-sm text-gray-600">{{ iv.application.job.title }} — {{ iv.application.job.company.company_name }}</p>
+                        <p class="text-sm text-gray-500 mt-1">
+                            {{ iv.scheduled_date|date:"d.m.Y H:i" }} • {{ iv.get_interview_type_display }} • {{ iv.duration_minutes }} daqiqa
+                        </p>
+                        {% if iv.location_link %}
+                        <a href="{{ iv.location_link }}" target="_blank" class="text-sm text-blue-600 hover:underline mt-1 inline-block">Havola</a>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'application_detail' iv.application.id %}" class="text-sm text-blue-600 hover:underline font-medium">Ariza</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="p-12 text-center text-gray-500">
+                Hozircha rejalashtirilgan intervyular yo'q. Arizalar bo'limidan intervyu rejalashtiring.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

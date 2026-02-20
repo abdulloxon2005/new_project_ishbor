@@ -1,0 +1,352 @@
+{% extends 'hr_bolim/base_with_sidebar.html' %}
+{% load static %}
+
+{% block title %}Dashboard | HR Tizimi{% endblock %}
+
+{% block employer_content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Welcome Banner -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold mb-2">
+                        {% if user.role == 'candidate' %}
+                            👤 Nomzod Dashboard
+                        {% elif user.role == 'employer' %}
+                            🏢 Ish beruvchi Dashboard
+                        {% else %}
+                            🎯 HR Dashboard
+                        {% endif %}
+                    </h1>
+                    <p class="text-blue-100 text-lg">
+                        {% if user.role == 'candidate' %}
+                            {{ profile.first_name }} {{ profile.last_name }}, ish izlashda yordamiz!
+                        {% elif user.role == 'employer' %}
+                            {{ company.company_name }}, ish berishda yordamiz!
+                        {% else %}
+                            HR tizimiga xush kelibsiz!
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    {% if user.role == 'candidate' %}
+                        <a href="{% url 'candidate_profile' %}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition">
+                            👤 Profil
+                        </a>
+                        <a href="{% url 'candidate_cv' %}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition">
+                            📄 CV
+                        </a>
+                        <a href="{% url 'my_applications' %}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition">
+                            📋 Arizalar
+                        </a>
+                    {% elif user.role == 'employer' %}
+                        <a href="{% url 'employer_profile' %}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition">
+                            🏢 Profil
+                        </a>
+                        <a href="{% url 'employer_jobs' %}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition">
+                            📢 Vakansiyalar
+                        </a>
+                        <a href="{% url 'employer_applications' %}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition">
+                            📋 Arizalar
+                        </a>
+                        <a href="{% url 'employer_statistics' %}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition">
+                            📊 Statistika
+                        </a>
+                        <a href="{% url 'employer_messages' %}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition">
+                            💬 Xabarlar
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {% if user.role == 'candidate' %}
+                <!-- Candidate Stats -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-blue-100 rounded-lg">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2 2v10a2 2 0 012 2h10a2 2 0 002-2V7a2 2 0 00-2-2z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Arizalar soni</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ applied_count }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-100 rounded-lg">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Intervyular</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ interview_count }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-purple-100 rounded-lg">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Saqlangan ishlar</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ saved_count }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-yellow-100 rounded-lg">
+                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.407-1.407A2 2 0 0118.594 15.586L8 9.414a2 2 0 00-2.828 0L4.172 10.586a2 2 0 00-2.828 2.828L8.414 18.586A2 2 0 0118.594 20.414L15 17z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">O'qilmagan xabarlar</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ unread_messages }}</p>
+                        </div>
+                    </div>
+                </div>
+
+            {% elif user.role == 'employer' %}
+                <!-- Employer Stats -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-blue-100 rounded-lg">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A9.001 9.001 0 0112 21a9.001 9.001 0 01-9-9.255V12A9 9 0 0112 3a9 9 0 019 9v.255z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Jami vakansiyalar</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ total_jobs }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-100 rounded-lg">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Faol vakansiyalar</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ active_jobs }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-purple-100 rounded-lg">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 8 0 4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Jami arizalar</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ total_applications }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-yellow-100 rounded-lg">
+                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.407-1.407A2 2 0 0118.594 15.586L8 9.414a2 2 0 00-2.828 0L4.172 10.586a2 2 0 00-2.828 2.828L8.414 18.586A2 2 0 0118.594 20.414L15 17z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Yangi arizalar</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ new_applications }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mt-8 bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-6">⚡ Tezkor harakatlar</h2>
+            
+            {% if user.role == 'candidate' %}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <a href="{% url 'jobs_list' %}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition">
+                        <div class="p-2 bg-blue-100 rounded-lg mr-3">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A9.001 9.001 0 0112 21a9.001 9.001 0 01-9-9.255V12A9 9 0 0112 3a9 9 0 019 9v.255z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">Vakansiyalarni ko'rish</h3>
+                            <p class="text-sm text-gray-600">Barcha ochiq vakansiyalar</p>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'candidate_cv' %}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition">
+                        <div class="p-2 bg-green-100 rounded-lg mr-3">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2 2v10a2 2 0 012 2h10a2 2 0 002-2V7a2 2 0 00-2-2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">CVni boshqarish</h3>
+                            <p class="text-sm text-gray-600">Ma'lumotlarni yangilash</p>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'my_applications' %}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition">
+                        <div class="p-2 bg-purple-100 rounded-lg mr-3">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2 2v10a2 2 0 012 2h10a2 2 0 002-2V7a2 2 0 00-2-2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">Arizalarim</h3>
+                            <p class="text-sm text-gray-600">Berilgan arizalar holati</p>
+                        </div>
+                    </a>
+                </div>
+
+            {% elif user.role == 'employer' %}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <a href="{% url 'create_job' %}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition">
+                        <div class="p-2 bg-green-100 rounded-lg mr-3">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8 4H8m8 4v16m0 4h.01M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">Yangi vakansiya</h3>
+                            <p class="text-sm text-gray-600">Yangi ish o'rnini joylash</p>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'employer_applications' %}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition">
+                        <div class="p-2 bg-blue-100 rounded-lg mr-3">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2 2v10a2 2 0 012 2h10a2 2 0 002-2V7a2 2 0 00-2-2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">Arizalar</h3>
+                            <p class="text-sm text-gray-600">Nomzodlarni ko'rish</p>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'employer_statistics' %}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition">
+                        <div class="p-2 bg-purple-100 rounded-lg mr-3">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">Statistika</h3>
+                            <p class="text-sm text-gray-600">Batafsil statistika</p>
+                        </div>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity Section -->
+<div class="bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">📈 So'nggi faoliyat</h2>
+            </div>
+            <div class="p-6">
+                {% if user.role == 'candidate' %}
+                    <div class="space-y-4">
+                        {% for application in recent_applications %}
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="font-medium text-gray-900">{{ application.job.title }}</p>
+                                <p class="text-sm text-gray-600">{{ application.applied_at|date:"d.m.Y" }}</p>
+                            </div>
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full 
+                                {% if application.status == 'pending' %}bg-yellow-100 text-yellow-800
+                                {% elif application.status == 'reviewed' %}bg-blue-100 text-blue-800
+                                {% elif application.status == 'accepted' %}bg-green-100 text-green-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ application.get_status_display }}
+                            </span>
+                        </div>
+                        {% empty %}
+                        <p class="text-gray-500 text-center py-8">Hali arizalar yo'q</p>
+                        {% endfor %}
+                    </div>
+
+                {% elif user.role == 'employer' %}
+                    <div class="space-y-4">
+                        {% for application in recent_applications %}
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="font-medium text-gray-900">{{ application.candidate.get_full_name }}</p>
+                                <p class="text-sm text-gray-600">{{ application.job.title }} - {{ application.applied_at|date:"d.m.Y" }}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <a href="{% url 'application_detail' application.id %}" class="text-blue-600 hover:text-blue-800 text-sm">
+                                    Ko'rish
+                                </a>
+                                <span class="px-3 py-1 text-xs font-semibold rounded-full 
+                                    {% if application.status == 'new' %}bg-red-100 text-red-800
+                                    {% elif application.status == 'reviewed' %}bg-yellow-100 text-yellow-800
+                                    {% elif application.status == 'interview' %}bg-blue-100 text-blue-800
+                                    {% elif application.status == 'accepted' %}bg-green-100 text-green-800
+                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    {{ application.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-gray-500 text-center py-8">Hali arizalar yo'q</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stat-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .quick-action-card {
+        transition: all 0.3s ease;
+    }
+    
+    .quick-action-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,203 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirish - HR Talent Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #4169FF;
+            --primary-purple: #7B4BFF;
+            --gradient-primary: linear-gradient(135deg, #4169FF 0%, #7B4BFF 100%);
+            --text-dark: #1a1a1a;
+            --text-gray: #666;
+            --bg-light: #F5F7FF;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 8px rgba(65, 105, 255, 0.08);
+            --shadow-md: 0 4px 20px rgba(65, 105, 255, 0.12);
+        }
+
+        body {
+            font-family: 'Onest', sans-serif;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .auth-container {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow-md);
+            width: 100%;
+            max-width: 450px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 24px;
+        }
+
+        .logo-icon::before { content: '💼'; }
+
+        .auth-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: var(--text-gray);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-blue);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(65, 105, 255, 0.1);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gradient-primary);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(65, 105, 255, 0.3);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        .auth-link {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .error-message {
+            color: #ef4444;
+            background: #rnfee2;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            text-align: center;
+            border: 1px solid #fca5a5; /* Red border */
+            display: none; /* Hidden by default, shown with JS if errors exist */
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h2>Xush kelibsiz!</h2>
+                <p>Ish izlovchi yoki Ish beruvchi sifatida tizimga kiring</p>
+            </div>
+
+            <div id="error-message" class="error-message">
+                {% if form.errors %}
+                    <p>Email yoki parol xato. Iltimos qaytadan urinib ko'ring.</p>
+                    <script>
+                        document.getElementById('error-message').style.display = 'block';
+                    </script>
+                {% endif %}
+            </div>
+
+            <form id="login-form" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                        {{ form.username }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Parol</label>
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        {{ form.password }}
+                    </div>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Kirish <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                Hisobingiz yo'qmi? <a href="{% url 'register' %}">Ro'yxatdan o'ting</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

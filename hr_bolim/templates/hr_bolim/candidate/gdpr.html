@@ -1,0 +1,110 @@
+{% extends 'hr_bolim/candidate/base_candidate.html' %}
+
+{% block title %}GDPR & Maxfiylik{% endblock %}
+
+{% block content %}
+<div class="page-header" style="margin-bottom: 2rem;">
+    <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--dark);">GDPR va Maxfiylik</h1>
+    <p style="color: var(--secondary);">Ma'lumotlaringizni boshqaring va huquqlaringizdan foydalaning</p>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}" style="{% if message.tags == 'error' %}background:#fee2e2; color:#991b1b; border-color:#fecaca;{% endif %}">
+            <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i> {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Rights Section -->
+<div class="grid-2" style="margin-bottom: 2rem;">
+    <!-- Export Data -->
+    <div class="card">
+        <h3><i class="fas fa-file-export" style="color: var(--primary);"></i> Ma'lumotlarni yuklab olish</h3>
+        <p style="color: var(--secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+            Siz haqingizda to'plangan barcha ma'lumotlarni (profil, arizalar, tarix) JSON formatida yuklab olishingiz mumkin.
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="export_data">
+            <button type="submit" class="btn btn-outline" style="width: 100%;">
+                Yuklab olish
+            </button>
+        </form>
+    </div>
+
+    <!-- Restrict Processing -->
+    <div class="card">
+        <h3><i class="fas fa-ban" style="color: var(--warning);"></i> Qayta ishlashni cheklash</h3>
+        <p style="color: var(--secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+            Ma'lumotlaringizni tahlil va marketing maqsadlarida ishlatilishini vaqtincha to'xtatishingiz mumkin.
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="restrict_processing">
+            {% if profile.is_processing_restricted %}
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Cheklovni olib tashlash
+                </button>
+                <p style="color: var(--danger); font-size: 0.8rem; margin-top: 0.5rem; text-align: center;">
+                    Hozirda cheklangan
+                </p>
+            {% else %}
+                <button type="submit" class="btn btn-outline" style="width: 100%; border-color: var(--warning); color: var(--warning);">
+                    Cheklash
+                </button>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<!-- Consent History -->
+<div class="card" style="margin-bottom: 2rem;">
+    <h3 style="margin-bottom: 1rem;">Rozilik tarixi</h3>
+    {% if consent_history %}
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="border-bottom: 1px solid var(--border); text-align: left;">
+                    <th style="padding: 0.75rem;">Harakat</th>
+                    <th style="padding: 0.75rem;">Sana</th>
+                    <th style="padding: 0.75rem;">Tafsilotlar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in consent_history %}
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 0.75rem; font-weight: 600;">{{ item.action }}</td>
+                    <td style="padding: 0.75rem; color: var(--secondary);">{{ item.date|date:"d.m.Y H:i" }}</td>
+                    <td style="padding: 0.75rem; color: var(--text-secondary); font-size: 0.9rem;">{{ item.details }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="color: var(--secondary);">Rozilik tarixi topilmadi.</p>
+    {% endif %}
+</div>
+
+<!-- Delete Account -->
+<div class="card" style="border: 1px solid #fee2e2;">
+    <h3 style="color: var(--danger);"><i class="fas fa-trash-alt"></i> Hisobni o'chirish</h3>
+    <p style="color: var(--secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+        Hisobingizni butunlay o'chirish bo'yicha so'rov yuborish. Bu amalni ortga qaytarib bo'lmaydi va barcha ma'lumotlaringiz 30 kundan keyin o'chiriladi.
+    </p>
+    
+    {% if deletion_request %}
+        <div style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; text-align: center;">
+            <strong>So'rov yuborilgan:</strong> {{ deletion_request.requested_at|date:"d.m.Y" }} <br>
+            Holat: {{ deletion_request.get_status_display }}
+        </div>
+    {% else %}
+        <form method="post" onsubmit="return confirm('Rostdan ham hisobingizni o\'chirmoqchimisiz?');">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete_account">
+            <button type="submit" class="btn btn-danger" style="width: 100%; background: var(--danger); color: white;">
+                Hisobni o'chirish
+            </button>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}

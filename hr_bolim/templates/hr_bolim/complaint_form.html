@@ -1,0 +1,76 @@
+{% extends 'hr_bolim/base.html' %}
+
+{% block title %}Shikoyat yuborish{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">⚠️ Shikoyat yuborish</h2>
+            <p class="text-gray-600 text-sm mt-1">Savollaringiz yoki shikoyatlaringiz bo'lsa, biz bilan bog'laning</p>
+        </div>
+
+        <div class="p-6">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="mb-4 p-4 rounded-lg {% if message.tags == 'success' %}bg-green-50 text-green-800{% elif message.tags == 'error' %}bg-red-50 text-red-800{% else %}bg-blue-50 text-blue-800{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Ismingiz</label>
+                        <input type="text" id="name" name="name" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="To'liq ismingiz">
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="email" name="email" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="email@example.com">
+                    </div>
+
+                    <div>
+                        <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">Mavzu</label>
+                        <input type="text" id="subject" name="subject" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Shikoyat mavzusi">
+                    </div>
+
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Xabar</label>
+                        <textarea id="message" name="message" rows="6" required
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  placeholder="Shikoyatingiz yoki savolingizni batafsil yozing..."></textarea>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <input type="checkbox" id="consent" name="consent" required
+                                   class="mt-1 mr-3">
+                            <label for="consent" class="text-sm text-blue-800">
+                                Men ushbu ma'lumotlarni qayta ishlashga roziman. GDPR qoidalariga muvofiq, mening ma'lumotlarim faqat shikoyatni ko'rib chiqish uchun ishlatiladi.
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-4">
+                        <a href="{% url 'home' %}" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                            Bekor qilish
+                        </a>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <i class="fas fa-paper-plane mr-2"></i>Yuborish
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

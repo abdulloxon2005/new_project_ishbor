@@ -1,0 +1,45 @@
+{% extends 'hr_bolim/candidate/base_candidate.html' %}
+{% load static %}
+
+{% block title %}Rejalashtirilgan intervyular | HR Tizimi{% endblock %}
+
+{% block content %}
+<div class="dashboard-section">
+    <h2 class="section-title">Rejalashtirilgan intervyular</h2>
+    <p class="text-secondary mb-4">Siz bilan qaysi kompaniya va qaysi lavozim uchun intervyu rejalashtirilgan</p>
+
+    <div style="display:grid; gap:1rem;">
+        {% for iv in interviews %}
+        <div class="card" style="padding:1.5rem;">
+            <div class="flex justify-between items-start flex-wrap gap-3">
+                <div>
+                    <p class="font-semibold text-lg text-gray-900">{{ iv.application.job.title }}</p>
+                    <p class="text-primary font-medium mt-1">{{ iv.application.job.company.company_name }}</p>
+                    <p class="text-secondary text-sm mt-2">
+                        {{ iv.scheduled_date|date:"d.m.Y" }} soat {{ iv.scheduled_date|time:"H:i" }} •
+                        {{ iv.get_interview_type_display }} •
+                        {{ iv.duration_minutes }} daqiqa
+                    </p>
+                    {% if iv.notes %}
+                    <p class="text-secondary text-sm mt-2">{{ iv.notes }}</p>
+                    {% endif %}
+                    {% if iv.location_link %}
+                    <a href="{{ iv.location_link }}" target="_blank" rel="noopener" class="text-primary hover:underline text-sm mt-2 inline-block">
+                        Havola / Manzil
+                    </a>
+                    {% endif %}
+                </div>
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                    Rejalashtirilgan
+                </span>
+            </div>
+        </div>
+        {% empty %}
+        <div class="card text-center py-12" style="color:var(--secondary);">
+            <i class="fas fa-calendar-times" style="font-size:3rem; margin-bottom:1rem; opacity:0.5;"></i>
+            <p>Hozircha siz bilan rejalashtirilgan intervyu yo'q.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

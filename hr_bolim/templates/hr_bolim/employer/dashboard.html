@@ -1,0 +1,186 @@
+{% extends 'hr_bolim/base_with_sidebar.html' %}
+{% load static %}
+
+{% block title %}Ish beruvchi paneli{% endblock %}
+
+{% block employer_content %}
+<div class="">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Ish beruvchi paneli</h1>
+                    <p class="text-gray-600">{{ company.company_name }}</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="{% url 'employer_profile' %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Profil</a>
+                    <a href="{% url 'create_job' %}" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">+ Vakansiya qo'shish</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-blue-100 rounded-lg">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A9.001 9.001 0 0112 21a9.001 9.001 0 01-9-9.255V12A9 9 0 0112 3a9 9 0 019 9v.255z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Jami vakansiyalar</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_jobs }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-100 rounded-lg">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Faol vakansiyalar</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ active_jobs }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-yellow-100 rounded-lg">
+                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Jami arizalar</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_applications }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-red-100 rounded-lg">
+                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5-5v5zM4 19l5-5m0 0V9a4 4 0 118 0v6m-8 0l5 5"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Yangi arizalar</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ new_applications }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity and Popular Jobs -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+            <!-- Recent Applications -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">So'nggi arizalar</h2>
+                </div>
+                <div class="p-6">
+                    {% for application in recent_applications %}
+                    <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+                        <div>
+                            <p class="font-medium text-gray-900">{{ application.candidate.get_full_name }}</p>
+                            <p class="text-sm text-gray-600">{{ application.job.title }}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                {% if application.status == 'new' %}bg-red-100 text-red-800
+                                {% elif application.status == 'reviewed' %}bg-yellow-100 text-yellow-800
+                                {% elif application.status == 'interview' %}bg-blue-100 text-blue-800
+                                {% elif application.status == 'accepted' %}bg-green-100 text-green-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ application.get_status_display }}
+                            </span>
+                            <p class="text-xs text-gray-500 mt-1">{{ application.applied_at|date:"d.m.Y" }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-gray-500 text-center py-4">Hali arizalar yo'q</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Popular Jobs -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Eng ko'p ko'rilgan ishlar</h2>
+                </div>
+                <div class="p-6">
+                    {% for job in popular_jobs %}
+                    <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+                        <div>
+                            <p class="font-medium text-gray-900">{{ job.title }}</p>
+                            <p class="text-sm text-gray-600">{{ job.employment_type }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-medium text-gray-900">{{ job.view_count }} ko'rilgan</p>
+                            <p class="text-xs text-gray-500">{{ job.application_count }} ariza</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-gray-500 text-center py-4">Hali vakansiyalar yo'q</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <a href="{% url 'employer_jobs' %}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-center">
+                    <div class="p-3 bg-indigo-100 rounded-lg">
+                        <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A9.001 9.001 0 0112 21a9.001 9.001 0 01-9-9.255V12A9 9 0 0112 3a9 9 0 019 9v.255z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-medium text-gray-900">Vakansiyalar</h3>
+                        <p class="text-sm text-gray-600">Barcha vakansiyalarni boshqarish</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{% url 'employer_applications' %}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-center">
+                    <div class="p-3 bg-purple-100 rounded-lg">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-medium text-gray-900">Arizalar</h3>
+                        <p class="text-sm text-gray-600">Nomzodlarni ko'rish va boshqarish</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{% url 'employer_statistics' %}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-100 rounded-lg">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-medium text-gray-900">Statistika</h3>
+                        <p class="text-sm text-gray-600">Batafsil statistik ma'lumotlar</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends 'hr_bolim/base_with_sidebar.html' %}
+{% load static %}
+
+{% block sub_title %}Profil{% endblock %}
+
+{% block employer_content %}
+<div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Company Info Card -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="text-center">
+                        {% if profile.logo %}
+                            <img src="{{ profile.logo.url }}" alt="{{ company.company_name }}" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover">
+                        {% else %}
+                            <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                            </div>
+                        {% endif %}
+                        <h2 class="text-xl font-bold text-gray-900">{{ company.company_name }}</h2>
+                        <p class="text-gray-600">{{ company.responsible_person }}</p>
+                        <div class="mt-4 text-sm text-gray-600">
+                            <p><strong>Email:</strong> {{ company.email }}</p>
+                            <p><strong>Telefon:</strong> {{ company.phone }}</p>
+                            <p><strong>STIR:</strong> {{ company.stir }}</p>
+                        </div>
+                        <div class="mt-4">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                {% if company.is_verified %}bg-green-100 text-green-800
+                                {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                                {% if company.is_verified %}✓ Tasdiqlangan{% else %}⏳ Tekshirilmoqda{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="bg-white rounded-lg shadow p-6 mt-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Statistika</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Jami vakansiyalar</span>
+                            <span class="font-medium">{{ profile.total_jobs_posted }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Jami arizalar</span>
+                            <span class="font-medium">{{ profile.total_applications }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Profil ko'rishlar</span>
+                            <span class="font-medium">{{ profile.profile_views }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Profil ma'lumotlari</h3>
+                    </div>
+                    <div class="p-6">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="mb-4 p-4 rounded-lg {% if message.tags == 'success' %}bg-green-50 text-green-800{% elif message.tags == 'error' %}bg-red-50 text-red-800{% else %}bg-blue-50 text-blue-800{% endif %}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Kompaniya logotipi
+                                    </label>
+                                    {{ form.logo }}
+                                    {% if profile.logo %}
+                                        <p class="mt-2 text-sm text-gray-600">
+                                            Joriy logotip: <a href="{{ profile.logo.url }}" target="_blank" class="text-blue-600 hover:text-blue-800">Ko'rish</a>
+                                        </p>
+                                    {% endif %}
+                                </div>
+
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Kompaniya haqida
+                                    </label>
+                                    {{ form.description }}
+                                </div>
+
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Manzil
+                                    </label>
+                                    {{ form.address }}
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Veb sayt
+                                    </label>
+                                    {{ form.website }}
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        LinkedIn
+                                    </label>
+                                    {{ form.linkedin }}
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Facebook
+                                    </label>
+                                    {{ form.facebook }}
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Instagram
+                                    </label>
+                                    {{ form.instagram }}
+                                </div>
+
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Telegram
+                                    </label>
+                                    {{ form.telegram }}
+                                </div>
+                            </div>
+
+                            <div class="mt-8 flex justify-end">
+                                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700">
+                                    Saqlash
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+<style>
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+</style>
+{% endblock employer_content %}

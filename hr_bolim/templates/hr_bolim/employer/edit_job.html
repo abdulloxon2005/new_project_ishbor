@@ -1,0 +1,209 @@
+{% extends 'hr_bolim/base_with_sidebar.html' %}
+{% load static %}
+
+{% block sub_title %}Vakansiyani tahrirlash{% endblock %}
+
+{% block employer_content %}
+<div class="max-w-4xl">
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">📝 Vakansiya ma'lumotlari</h2>
+                <p class="text-gray-600 mt-1">{{ job.title }} vakansiyasini tahrirlang</p>
+            </div>
+
+            <div class="p-6">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="mb-4 p-4 rounded-lg {% if message.tags == 'success' %}bg-green-50 text-green-800{% elif message.tags == 'error' %}bg-red-50 text-red-800{% else %}bg-blue-50 text-blue-800{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <div class="text-red-800">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Basic Information -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">📋 Asosiy ma'lumotlar</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Lavozim nomi *
+                                </label>
+                                {{ form.title }}
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Ish turi *
+                                </label>
+                                {{ form.employment_type }}
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Ish joyi *
+                                </label>
+                                {{ form.location }}
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Minimal maosh
+                                </label>
+                                {{ form.salary_min }}
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Maksimal maosh
+                                </label>
+                                {{ form.salary_max }}
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Joylar soni *
+                                </label>
+                                {{ form.positions_count }}
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Muddati *
+                                </label>
+                                {{ form.deadline }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Requirements -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">🎯 Talablar</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Talablar *
+                                </label>
+                                {{ form.requirements }}
+                                <p class="mt-1 text-sm text-gray-500">Masalan: Oliy ma'lumot, 3+ yil tajriba, Python bilish...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Responsibilities -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">💼 Vazifalar</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Vazifalar *
+                                </label>
+                                {{ form.responsibilities }}
+                                <p class="mt-1 text-sm text-gray-500">Masalan: Web dasturlash, API yaratish, Team bilan ishlash...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Benefits -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">🎁 Afzalliklar</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Afzalliklar
+                                </label>
+                                {{ form.benefits }}
+                                <p class="mt-1 text-sm text-gray-500">Masalan: Fleksible ish vaqti, Uydan ishlash imkoniyati, Kasbiy rivojlanish...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Current Status -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">📊 Joriy holat</h3>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <span class="font-medium text-gray-700">Status:</span>
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                        {% if job.status == 'active' %}bg-green-100 text-green-800
+                                        {% elif job.status == 'draft' %}bg-gray-100 text-gray-800
+                                        {% elif job.status == 'closed' %}bg-red-100 text-red-800
+                                        {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                                        {{ job.get_status_display }}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="font-medium text-gray-700">Ko'rishlar:</span>
+                                    <span class="text-gray-900">{{ job.view_count }}</span>
+                                </div>
+                                <div>
+                                    <span class="font-medium text-gray-700">Arizalar:</span>
+                                    <span class="text-gray-900">{{ job.application_count }}</span>
+                                </div>
+                                <div>
+                                    <span class="font-medium text-gray-700">Yaratilgan:</span>
+                                    <span class="text-gray-900">{{ job.created_at|date:"d.m.Y" }}</span>
+                                </div>
+                                <div>
+                                    <span class="font-medium text-gray-700">Yangilangan:</span>
+                                    <span class="text-gray-900">{{ job.updated_at|date:"d.m.Y" }}</span>
+                                </div>
+                                <div>
+                                    <span class="font-medium text-gray-700">Deadline:</span>
+                                    <span class="text-gray-900">{{ job.deadline|date:"d.m.Y" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-4">
+                        <a href="{% url 'employer_jobs' %}" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                            Bekor qilish
+                        </a>
+                        <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700">
+                            Saqlash
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+textarea.form-input {
+    resize: vertical;
+    min-height: 120px;
+}
+</style>
+{% endblock employer_content %}

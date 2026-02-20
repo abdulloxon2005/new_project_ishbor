@@ -1,0 +1,487 @@
+{% extends 'hr_bolim/candidate/base_candidate.html' %}
+{% load static %}
+
+{% block title %}Profil Sozlamalari | HR Tizimi{% endblock %}
+
+{% block content %}
+<style>
+    /* Profile Header Styles */
+    .profile-banner {
+        background: linear-gradient(135deg, #2563eb, #1e3a8a);
+        height: 160px;
+        border-radius: var(--radius-lg);
+        position: relative;
+        margin-bottom: 90px;
+        box-shadow: var(--shadow-md);
+    }
+
+    .profile-header-content {
+        position: absolute;
+        bottom: -60px;
+        left: 40px;
+        display: flex;
+        align-items: flex-end;
+        gap: 24px;
+        z-index: 10;
+    }
+
+    .profile-pic-wrapper {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 4px solid var(--card-bg);
+        background: var(--card-bg);
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: visible;
+    }
+
+    .profile-pic {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: #f1f5f9;
+        display: block;
+    }
+    
+    .profile-placeholder {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e2e8f0;
+        font-size: 3.5rem;
+        color: #94a3b8;
+    }
+
+    .camera-btn {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        background: var(--primary);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 3px solid var(--card-bg);
+        transition: all 0.2s ease;
+        box-shadow: var(--shadow-sm);
+        z-index: 20;
+    }
+
+    .camera-btn:hover {
+        background: var(--primary-hover);
+        transform: scale(1.1);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .profile-names {
+        margin-bottom: 15px;
+    }
+    
+    .profile-names h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0.25rem;
+    }
+    
+    .profile-names p {
+        color: var(--secondary);
+        font-size: 1rem;
+    }
+
+    /* Resume Upload Styles */
+    .resume-upload-container {
+        border: 2px dashed #cbd5e1;
+        border-radius: var(--radius-md);
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        background-color: #f8fafc;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .resume-upload-container:hover, .resume-upload-container.drag-active {
+        border-color: var(--primary);
+        background-color: #eef2ff;
+    }
+
+    .drop-zone-content {
+        pointer-events: none; /* Let clicks pass through to container */
+    }
+
+    .drop-zone-icon {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .drop-zone-text {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.25rem;
+    }
+
+    .drop-zone-hint {
+        font-size: 0.85rem;
+        color: var(--secondary);
+    }
+
+    .file-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: white;
+        padding: 10px 15px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        margin-top: 10px;
+        box-shadow: var(--shadow-sm);
+        width: 100%;
+        max-width: 400px; /* Limit width */
+    }
+    
+    .file-info i.fa-file-pdf, .file-info i.fa-file-word, .file-info i.fa-file-alt {
+        color: var(--danger); 
+        font-size: 1.2rem;
+    }
+
+    /* Hide default inputs */
+    input[type="file"] {
+        display: none;
+    }
+    
+    /* Form Sections */
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .alert-success-custom {
+        background: #ecfdf5; 
+        color: #047857; 
+        padding: 0.5rem 1rem; 
+        border-radius: 8px; 
+        font-size: 0.9rem; 
+        border: 1px solid #a7f3d0;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+</style>
+
+<div class="profile-banner">
+    <div class="profile-header-content">
+        <div class="profile-pic-wrapper">
+            {% if profile.profile_picture %}
+                <img src="{{ profile.profile_picture.url }}" alt="Profile" class="profile-pic" id="avatarPreview">
+            {% else %}
+                <div class="profile-placeholder" id="avatarPlaceholder">
+                    <i class="fas fa-user"></i>
+                </div>
+            {% endif %}
+            
+            <label for="id_profile_picture" class="camera-btn" title="Rasmni o'zgartirish">
+                <i class="fas fa-camera"></i>
+            </label>
+        </div>
+        <div class="profile-names">
+            <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+            <p>{{ user.email }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+    <div class="section-title">
+        <span>Shaxsiy Ma'lumotlar</span>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert-success-custom">
+                    <i class="fas fa-check-circle"></i> {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    <form method="post" enctype="multipart/form-data" id="profileForm">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" style="background:#fee2e2; color:#991b1b; padding:1rem; margin-bottom:1rem; border-radius:8px;">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <!-- Hidden Profile Picture Input -->
+        <input type="file" name="profile_picture" id="id_profile_picture" accept="image/*" onchange="previewImage(this)">
+        {% if form.profile_picture.errors %}
+            <div style="color:var(--danger); font-size:0.85rem; margin-top:0.25rem; text-align: center;">
+                {{ form.profile_picture.errors }}
+            </div>
+        {% endif %}
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label class="form-label">Kasb / Mutaxassislik</label>
+                {{ form.profession }}
+                {% if form.profession.errors %}
+                    <div style="color:var(--danger); font-size:0.85rem; margin-top:0.25rem;">{{ form.profession.errors.0 }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label class="form-label">Manzil</label>
+                {{ form.location }}
+                {% if form.location.errors %}
+                    <div style="color:var(--danger); font-size:0.85rem; margin-top:0.25rem;">{{ form.location.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Umumiy ish tajribasi (yil)</label>
+                {{ form.experience_years }}
+                {% if form.experience_years.errors %}
+                    <div style="color:var(--danger); font-size:0.85rem; margin-top:0.25rem;">{{ form.experience_years.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group" style="grid-column: span 2;">
+                <label class="form-label">Asosiy Rezyume (CV)</label>
+                
+                <!-- Custom Drag and Drop Zone -->
+                <div class="resume-upload-container" id="drop-zone">
+                    <div class="drop-zone-content">
+                        <i class="fas fa-cloud-upload-alt drop-zone-icon"></i>
+                        <p class="drop-zone-text">Faylni yuklash uchun bosing yoki shu yerga tashlang</p>
+                        <p class="drop-zone-hint">PDF, DOC, DOCX (Maks: 5MB)</p>
+                    </div>
+                </div>
+
+                <!-- Hidden the actual Django input but keep it in DOM for form submission -->
+                <div style="display:none;">
+                    {{ form.resume_file }}
+                </div>
+
+                <!-- Selected File Display -->
+                <div id="file-info" class="file-info" style="display: none;">
+                    <i class="fas fa-file-alt" id="file-icon"></i>
+                    <span id="filename" style="flex-grow: 1; font-weight: 500; color: var(--text-main); word-break: break-all;"></span>
+                    <i class="fas fa-check" style="color: var(--success);"></i>
+                </div>
+
+                {% if form.resume_file.errors %}
+                    <div style="color:var(--danger); font-size:0.85rem; margin-top:0.25rem;">{{ form.resume_file.errors.0 }}</div>
+                {% endif %}
+                
+                {% if profile.resume_file %}
+                    <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--secondary);">
+                        Joriy fayl: <a href="{{ profile.resume_file.url }}" target="_blank" style="color: var(--primary); text-decoration: underline;">
+                            {% if profile.resume_file.name %}{{ profile.resume_file.name }}{% else %}Yuklangan fayl{% endif %}
+                        </a>
+                    </div>
+                {% endif %}
+
+                <!-- Existing Resumes List -->
+                {% if resumes %}
+                <div style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+                    <label class="form-label" style="margin-bottom: 0.5rem; display: block;">Mening CV-larim (Tanlash uchun)</label>
+                    <div class="grid-2">
+                        {% for resume in resumes %}
+                        <div class="card" style="padding: 1rem; display: flex; align-items: center; gap: 0.75rem; border: 1px solid var(--border); box-shadow: none; margin-bottom: 0;">
+                            <i class="fas fa-file-pdf" style="color: var(--danger); font-size: 1.5rem;"></i>
+                            <div style="flex: 1; overflow: hidden;">
+                                <h5 style="margin: 0; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ resume.title }}</h5>
+                                <p style="margin: 0; font-size: 0.75rem; color: var(--secondary);">{{ resume.created_at|date:"d.m.Y" }}</p>
+                            </div>
+                            <a href="{{ resume.file.url }}" target="_blank" class="btn-icon" style="width: 28px; height: 28px; background: #eff6ff; color: var(--primary); font-size: 0.8rem;">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group" style="grid-column: span 2;">
+                <label class="form-label">O'zingiz haqingizda</label>
+                {{ form.about_me }}
+                {% if form.about_me.errors %}
+                    <div style="color:var(--danger); font-size:0.85rem; margin-top:0.25rem;">{{ form.about_me.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Ko'nikmalar (Vergul bilan ajrating)</label>
+            {{ form.skills }}
+            <p style="font-size: 0.8rem; color: var(--secondary); margin-top: 0.25rem;">Masalan: Python, Django, React, SQL</p>
+            {% if form.skills.errors %}
+                <div style="color:var(--danger); font-size:0.85rem; margin-top:0.25rem;">{{ form.skills.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <h3 style="font-size:1.1rem; margin:1.5rem 0 1rem 0; color:var(--text-main); font-weight:600; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">Ijtimoiy Tarmoqlar</h3>
+        
+        <div class="grid-3">
+            <div class="form-group">
+                <label class="form-label"><i class="fab fa-linkedin" style="color:#0077b5;"></i> LinkedIn</label>
+                {{ form.linkedin }}
+                {% if form.linkedin.errors %}
+                    <div style="color:var(--danger); font-size:0.85rem; margin-top:0.25rem;">{{ form.linkedin.errors.0 }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fab fa-github"></i> GitHub</label>
+                {{ form.github }}
+                {% if form.github.errors %}
+                    <div style="color:var(--danger); font-size:0.85rem; margin-top:0.25rem;">{{ form.github.errors.0 }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-globe" style="color:var(--primary);"></i> Portfolio</label>
+                {{ form.portfolio }}
+                {% if form.portfolio.errors %}
+                    <div style="color:var(--danger); font-size:0.85rem; margin-top:0.25rem;">{{ form.portfolio.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div style="text-align:right; margin-top:2rem;">
+            <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1rem;">
+                <i class="fas fa-save" style="margin-right: 8px;"></i> Saqlash
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Profile Picture Preview
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                const wrapper = document.querySelector('.profile-pic-wrapper');
+                
+                // Hide placeholder if exists
+                const placeholder = document.getElementById('avatarPlaceholder');
+                if(placeholder) placeholder.style.display = 'none';
+
+                // Check for existing image
+                let img = document.getElementById('avatarPreview');
+                if (!img) {
+                    img = document.createElement('img');
+                    img.className = 'profile-pic';
+                    img.id = 'avatarPreview';
+                    // Insert before the label (which is camera-btn)
+                    // The wrapper only has img/placeholder and label. 
+                    // So we can append or insert before label.
+                    const label = wrapper.querySelector('.camera-btn');
+                    wrapper.insertBefore(img, label);
+                }
+                
+                img.src = e.target.result;
+                img.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Drag and Drop Resume Logic
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.querySelector('input[name="resume_file"]'); 
+    const fileInfo = document.getElementById('file-info');
+    const filenameDisplay = document.getElementById('filename');
+    const fileIcon = document.getElementById('file-icon');
+
+    if (dropZone && fileInput) {
+        // Trigger file input when clicking drop zone
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // Update file info when file is selected via dialog
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                updateFileInfo(fileInput.files[0]);
+            }
+        });
+
+        // Drag events
+        const events = ['dragenter', 'dragover', 'dragleave', 'drop'];
+        events.forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            dropZone.classList.add('drag-active');
+        }
+
+        function unhighlight(e) {
+            dropZone.classList.remove('drag-active');
+        }
+
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files.length > 0) {
+                fileInput.files = files; // Assign dropped files to the hidden input
+                updateFileInfo(files[0]);
+            }
+        }
+
+        function updateFileInfo(file) {
+            filenameDisplay.textContent = file.name;
+            fileInfo.style.display = 'flex';
+            
+            // Icon logic
+            const ext = file.name.split('.').pop().toLowerCase();
+            fileIcon.className = 'fas'; // reset
+            if (ext === 'pdf') {
+                fileIcon.classList.add('fa-file-pdf');
+            } else if (ext === 'doc' || ext === 'docx') {
+                fileIcon.classList.add('fa-file-word');
+            } else {
+                fileIcon.classList.add('fa-file-alt');
+            }
+        }
+    }
+</script>
+{% endblock %}

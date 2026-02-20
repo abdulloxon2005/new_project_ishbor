@@ -1,0 +1,53 @@
+<!-- Admin Sidebar Content -->
+<div class="sidebar-section">
+    <div class="sidebar-section-title">Asosiy</div>
+    <a href="{% url 'admin_dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-tachometer-alt"></i>
+        </div>
+        <div class="sidebar-link-text">Dashboard</div>
+        {% if request.resolver_match.url_name == 'admin_dashboard' %}
+        <div class="sidebar-badge">Asosiy</div>
+        {% endif %}
+    </a>
+</div>
+
+<div class="sidebar-section">
+    <div class="sidebar-section-title">Boshqaruv</div>
+    <a href="{% url 'admin_companies' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_companies' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-building"></i>
+        </div>
+        <div class="sidebar-link-text">Kompaniyalar</div>
+        {% if request.resolver_match.url_name == 'admin_companies' %}
+        <div class="sidebar-badge">Boshqaruv</div>
+        {% endif %}
+    </a>
+    <a href="{% url 'admin_gdpr_logs' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_gdpr_logs' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="sidebar-link-text">GDPR Loglar</div>
+        {% if request.resolver_match.url_name == 'admin_gdpr_logs' %}
+        <div class="sidebar-badge">Xavfsizlik</div>
+        {% endif %}
+    </a>
+    <a href="{% url 'admin_data_requests' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_data_requests' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-database"></i>
+        </div>
+        <div class="sidebar-link-text">Data So'rovlar</div>
+        {% if request.resolver_match.url_name == 'admin_data_requests' %}
+        <div class="sidebar-badge">Ma'lumot</div>
+        {% endif %}
+    </a>
+    <a href="{% url 'admin_complaints' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_complaints' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="sidebar-link-text">Shikoyatlar</div>
+        {% if request.resolver_match.url_name == 'admin_complaints' %}
+        <div class="sidebar-badge">Shikoyatlar</div>
+        {% endif %}
+    </a>
+</div>

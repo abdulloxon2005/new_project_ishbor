@@ -1,0 +1,272 @@
+{% extends 'hr_bolim/base_with_sidebar.html' %}
+{% load static %}
+
+{% block title %}Statistika paneli{% endblock %}
+
+{% block employer_content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">📊 Statistika paneli</h1>
+                    <p class="text-gray-600">{{ company.company_name }}</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="{% url 'employer_dashboard' %}" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">Dashboard</a>
+                    <button onclick="exportStatistics()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        📊 Export hisobot
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Key Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-blue-100 rounded-lg">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A9.001 9.001 0 0112 21a9.001 9.001 0 01-9-9.255V12A9 9 0 0112 3a9 9 0 019 9v.255z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Jami vakansiyalar</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_jobs }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-100 rounded-lg">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Faol vakansiyalar</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ active_jobs }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-yellow-100 rounded-lg">
+                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Jami arizalar</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_applications }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-purple-100 rounded-lg">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Profil ko'rishlar</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ profile.profile_views }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Application Status Chart -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Arizalar holati bo'yicha</h2>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        {% for stat in application_stats %}
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 rounded-full mr-3
+                                    {% if stat.status == 'new' %}bg-red-500
+                                    {% elif stat.status == 'reviewed' %}bg-yellow-500
+                                    {% elif stat.status == 'interview' %}bg-blue-500
+                                    {% elif stat.status == 'accepted' %}bg-green-500
+                                    {% else %}bg-gray-500{% endif %}">
+                                </div>
+                                <span class="text-gray-700">
+                                    {% if stat.status == 'new' %}Yangi
+                                    {% elif stat.status == 'reviewed' %}Ko'rilgan
+                                    {% elif stat.status == 'interview' %}Intervyu
+                                    {% elif stat.status == 'accepted' %}Qabul qilingan
+                                    {% else %}Rad etilgan{% endif %}
+                                </span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="font-medium text-gray-900 mr-2">{{ stat.count }}</span>
+                                <div class="w-24 bg-gray-200 rounded-full h-2">
+                                    <div class="h-2 rounded-full
+                                        {% if stat.status == 'new' %}bg-red-500
+                                        {% elif stat.status == 'reviewed' %}bg-yellow-500
+                                        {% elif stat.status == 'interview' %}bg-blue-500
+                                        {% elif stat.status == 'accepted' %}bg-green-500
+                                        {% else %}bg-gray-500{% endif %}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">So'nggi faoliyat</h2>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        {% for application in recent_applications %}
+                        <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+                            <div>
+                                <p class="font-medium text-gray-900">{{ application.candidate.get_full_name }}</p>
+                                <p class="text-sm text-gray-600">{{ application.job.title }}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                    {% if application.status == 'new' %}bg-red-100 text-red-800
+                                    {% elif application.status == 'reviewed' %}bg-yellow-100 text-yellow-800
+                                    {% elif application.status == 'interview' %}bg-blue-100 text-blue-800
+                                    {% elif application.status == 'accepted' %}bg-green-100 text-green-800
+                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    {{ application.get_status_display }}
+                                </span>
+                                <p class="text-xs text-gray-500 mt-1">{{ application.applied_at|date:"d.m.Y H:i" }}</p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-gray-500 text-center py-4">So'nggi faoliyat yo'q</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+            <!-- Most Viewed Jobs -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Eng ko'p ko'rilgan vakansiyalar</h2>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        {% for job in most_viewed %}
+                        <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+                            <div>
+                                <p class="font-medium text-gray-900">{{ job.title }}</p>
+                                <p class="text-sm text-gray-600">{{ job.get_employment_type_display }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-medium text-gray-900">{{ job.view_count }}</p>
+                                <p class="text-xs text-gray-500">ko'rilgan</p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-gray-500 text-center py-4">Hali vakansiyalar yo'q</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Most Applied Jobs -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Eng ko'p ariza tushgan vakansiyalar</h2>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        {% for job in most_applied %}
+                        <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+                            <div>
+                                <p class="font-medium text-gray-900">{{ job.title }}</p>
+                                <p class="text-sm text-gray-600">{{ job.get_employment_type_display }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-medium text-gray-900">{{ job.app_count }}</p>
+                                <p class="text-xs text-gray-500">ariza</p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-gray-500 text-center py-4">Hali arizalar yo'q</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Summary -->
+        <div class="bg-white rounded-lg shadow mt-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">📈 Ish samaradorligi</h2>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-600">
+                            {% if total_jobs > 0 %}
+                                {{ total_applications|div:total_jobs|floatformat:1 }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </div>
+                        <p class="text-gray-600 mt-2">O'rtacha arizalar soni</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-green-600">
+                            {% if total_applications > 0 %}
+                                {% with accepted_count=0 %}
+                                    {% for stat in application_stats %}
+                                        {% if stat.status == 'accepted' %}
+                                            {% with accepted_count=stat.count %}
+                                                {{ accepted_count|div:total_applications|mul:100|floatformat:1 }}%
+                                            {% endwith %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endwith %}
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </div>
+                        <p class="text-gray-600 mt-2">Qabul qilish foizi</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-purple-600">
+                            {% if total_jobs > 0 %}
+                                {{ active_jobs|div:total_jobs|mul:100|floatformat:1 }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </div>
+                        <p class="text-gray-600 mt-2">Faol vakansiyalar foizi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function exportStatistics() {
+    alert('Statistika export funksiyasi tez orada qo\'shiladi');
+}
+</script>
+{% endblock %}

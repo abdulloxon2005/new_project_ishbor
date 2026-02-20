@@ -1,0 +1,150 @@
+{% extends 'hr_bolim/candidate/base_candidate.html' %}
+
+{% block title %}Nomzod Dashboard{% endblock %}
+
+{% block content %}
+<style>
+:root {
+    --primary: #4169FF;
+    --primary-purple: #7B4BFF;
+    --gradient-primary: linear-gradient(135deg, #4169FF 0%, #7B4BFF 100%);
+    --text-main: #1a1a1a;
+    --secondary: #666;
+    --success: #22c55e;
+    --accent: #f59e0b;
+    --border: #e5e7eb;
+    --transition: all 0.3s ease;
+    --shadow-sm: 0 2px 8px rgba(65, 105, 255, 0.08);
+    --shadow-md: 0 4px 20px rgba(65, 105, 255, 0.12);
+}
+
+    .welcome-banner {
+        background: linear-gradient(135deg, #2563eb, #1e3a8a);
+        color: white;
+        padding: 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-content h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        transition: var(--transition);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .stat-info h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-info p {
+        color: var(--secondary);
+        font-size: 0.9rem;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .icon-blue { background: #eff6ff; color: var(--primary); }
+    .icon-green { background: #ecfdf5; color: var(--success); }
+    .icon-orange { background: #fff7ed; color: var(--accent); }
+
+    .section-title {
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-main);
+    }
+</style>
+
+<div class="welcome-banner">
+    <div class="welcome-content">
+        <h1>Xush kelibsiz, {{ user.first_name }}! 👋</h1>
+        <p>Bugun karyerangiz uchun yangi imkoniyatlarni kashf eting.</p>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-info">
+            <h3>{{ applied_count }}</h3>
+            <p>Topshirilgan arizalar</p>
+        </div>
+        <div class="stat-icon icon-blue">
+            <i class="fas fa-paper-plane"></i>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-info">
+            <h3>{{ interview_count }}</h3>
+            <p>Interview chaqiruvlar</p>
+        </div>
+        <div class="stat-icon icon-green">
+            <i class="fas fa-user-tie"></i>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-info">
+            <h3>{{ profile.profile_views }}</h3>
+            <p>Profil ko'rishlar</p>
+        </div>
+        <div class="stat-icon icon-orange">
+            <i class="fas fa-eye"></i>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-info">
+            <h3>{{ unread_messages }}</h3>
+            <p>O'qilmagan xabarlar</p>
+        </div>
+        <div class="stat-icon icon-blue" style="background:var(--primary); color:white;">
+            <i class="fas fa-comment-alt"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Placeholder for Recent Activity or Recommended Jobs -->
+<div class="dashboard-section">
+    <h2 class="section-title">So'nggi harakatlar</h2>
+    <div style="background:white; padding:2rem; text-align:center; border-radius:16px; border:1px solid var(--border); color:var(--secondary);">
+        <i class="fas fa-history" style="font-size:2rem; margin-bottom:1rem; opacity:0.5;"></i>
+        <p>Hozircha hech qanday faollik yo'q.</p>
+        <a href="#" style="color:var(--primary); font-weight:600; margin-top:1rem; display:inline-block;">Ish qidirishni boshlash</a>
+    </div>
+</div>
+{% endblock %}

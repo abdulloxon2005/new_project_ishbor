@@ -1,0 +1,114 @@
+{% extends 'hr_bolim/admin/base_admin.html' %}
+
+{% block title %}Kompaniyalar{% endblock %}
+
+{% block page_title %}Kompaniyalar{% endblock %}
+
+{% block admin_content %}
+<div class="bg-white rounded-lg shadow">
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-gray-900">🏢 Kompaniyalarni boshqarish</h2>
+            <div class="flex space-x-2">
+                <a href="?status=" class="px-3 py-1 text-sm {% if status_filter == '' %}bg-gray-900 text-white{% else %}bg-gray-100 text-gray-700{% endif %} rounded-lg">
+                    Barchasi
+                </a>
+                <a href="?status=pending" class="px-3 py-1 text-sm {% if status_filter == 'pending' %}bg-yellow-100 text-yellow-800{% else %}bg-gray-100 text-gray-700{% endif %} rounded-lg">
+                    Kutilmoqda
+                </a>
+                <a href="?status=verified" class="px-3 py-1 text-sm {% if status_filter == 'verified' %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-700{% endif %} rounded-lg">
+                    Tasdiqlangan
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Companies List -->
+    <div class="divide-y divide-gray-200">
+        {% for company in companies %}
+        <div class="p-6 hover:bg-gray-50">
+            <div class="flex justify-between items-start">
+                <div class="flex-1">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <h3 class="text-lg font-medium text-gray-900">{{ company.company_name }}</h3>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full {% if company.is_verified %}bg-green-100 text-green-800{% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                            {% if company.is_verified %}Tasdiqlangan{% else %}Kutilmoqda{% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
+                        <div>
+                            <span class="font-medium">STIR:</span> {{ company.stir }}
+                        </div>
+                        <div>
+                            <span class="font-medium">Mas'ul shaxs:</span> {{ company.responsible_person }}
+                        </div>
+                        <div>
+                            <span class="font-medium">Email:</span> {{ company.email }}
+                        </div>
+                        <div>
+                            <span class="font-medium">Telefon:</span> {{ company.phone }}
+                        </div>
+                        <div class="md:col-span-2">
+                            <span class="font-medium">Ro'yxatdan o'tgan:</span> {{ company.created_at|date:"d.m.Y H:i" }}
+                        </div>
+                    </div>
+
+                    {% if company.profile %}
+                    <div class="bg-gray-50 rounded-lg p-4 mb-3">
+                        <h4 class="text-sm font-medium text-gray-900 mb-2">📋 Kompaniya profili</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-600">Vakansiyalar soni:</span>
+                                <span class="font-medium text-gray-900">{{ company.profile.total_jobs_posted }}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600">Arizalar soni:</span>
+                                <span class="font-medium text-gray-900">{{ company.profile.total_applications }}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600">Profil ko'rilgan:</span>
+                                <span class="font-medium text-gray-900">{{ company.profile.profile_views }}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600">Veb sayt:</span>
+                                <a href="{{ company.profile.website }}" target="_blank" class="text-blue-600 hover:underline">{{ company.profile.website }}</a>
+                            </div>
+                        </div>
+                        {% if company.profile.description %}
+                        <div class="mt-3">
+                            <span class="text-gray-600 text-sm">Tavsif:</span>
+                            <p class="text-gray-700 mt-1">{{ company.profile.description|truncatewords:20 }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="ml-4 flex space-x-2">
+                    {% if not company.is_verified %}
+                        <form method="post" action="{% url 'admin_approve_company' company.id %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="px-3 py-1 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700">
+                                <i class="fas fa-check mr-1"></i>Tasdiqlash
+                            </button>
+                        </form>
+                    {% endif %}
+                    
+                    <button class="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">
+                        <i class="fas fa-eye mr-1"></i>Tafsilotlar
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="p-12 text-center">
+            <i class="fas fa-building text-gray-400 text-5xl mb-4"></i>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">Kompaniyalar yo'q</h3>
+            <p class="text-gray-600">Hali hech qanday kompaniya ro'yxatdan o'tmagan</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

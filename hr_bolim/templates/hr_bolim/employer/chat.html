@@ -1,0 +1,172 @@
+{% extends 'hr_bolim/base_with_sidebar.html' %}
+{% load static %}
+
+{% block sub_title %}Suhbat{% endblock %}
+
+{% block employer_content %}
+<div>
+    <div class="mb-4 flex items-center gap-3">
+        <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+            <span class="text-gray-500 font-medium">{{ other_user.get_full_name|slice:":2"|upper }}</span>
+        </div>
+        <div>
+            <h2 class="font-semibold text-gray-900">{{ other_user.get_full_name }}</h2>
+            <p class="text-sm text-gray-600">{{ other_user.email }}</p>
+        </div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Chat Area -->
+        <div class="lg:col-span-3">
+            <div class="bg-white rounded-lg shadow h-[600px] flex flex-col">
+                <!-- Messages -->
+                    <div class="flex-1 overflow-y-auto p-6 space-y-4" id="messagesContainer">
+                        {% for message in messages %}
+                        <div class="flex {% if message.sender == request.user %}justify-end{% else %}justify-start{% endif %}">
+                            <div class="max-w-xs lg:max-w-md">
+                                <div class="px-4 py-2 rounded-lg {% if message.sender == request.user %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-900{% endif %}">
+                                    {% if message.content %}
+                                        <p class="text-sm">{{ message.content }}</p>
+                                    {% endif %}
+                                    {% if message.attachment %}
+                                        <a href="{{ message.attachment.url }}" target="_blank" class="block mt-1 text-xs underline">
+                                            📎 {{ message.attachment.name }}
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 {% if message.sender == request.user %}text-right{% endif %}">
+                                    {{ message.timestamp|date:"H:i" }}
+                                    {% if message.sender == request.user %}
+                                        {% if message.is_read %}✓✓{% else %}✓{% endif %}
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-8">
+                            <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                            <p class="text-gray-600">Suhbat boshlanmagan</p>
+                            <p class="text-sm text-gray-500 mt-1">Birinchi xabarni yuboring</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Message Input -->
+                    <div class="border-t border-gray-200 p-4">
+                    <form method="post" id="messageForm" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
+                                <input type="text" name="content" id="messageInput" 
+                                    placeholder="Xabar yozing..." 
+                                    class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    >
+                                <input type="file" name="attachment" class="text-xs text-gray-600">
+                                <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                    </svg>
+                                    Yuborish
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">⚡ Tezkor harakatlar</h3>
+                    <div class="space-y-3">
+                        <button onclick="sendTemplate('interview')" class="w-full px-4 py-2 bg-green-100 text-green-800 rounded-lg hover:bg-green-200 text-left">
+                            📅 Intervyu taklifi
+                        </button>
+                        <button onclick="sendTemplate('rejected')" class="w-full px-4 py-2 bg-red-100 text-red-800 rounded-lg hover:bg-red-200 text-left">
+                            ❌ Rad etish xati
+                        </button>
+                        <button onclick="sendTemplate('accepted')" class="w-full px-4 py-2 bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200 text-left">
+                            ✅ Qabul qilish xati
+                        </button>
+                        <button onclick="sendTemplate('info')" class="w-full px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 text-left">
+                            ℹ️ Qo'shimcha ma'lumot
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Candidate Info -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">👤 Nomzod haqida</h3>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <span class="text-gray-600">Ism:</span>
+                            <p class="font-medium">{{ other_user.get_full_name }}</p>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Email:</span>
+                            <p class="font-medium">{{ other_user.email }}</p>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Telefon:</span>
+                            <p class="font-medium">{{ other_user.phone|default:"Ko'rsatilmagan" }}</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto scroll to bottom
+function scrollToBottom() {
+    const container = document.getElementById('messagesContainer');
+    container.scrollTop = container.scrollHeight;
+}
+
+// Scroll to bottom on page load
+document.addEventListener('DOMContentLoaded', function() {
+    scrollToBottom();
+    
+    // Focus on message input
+    document.getElementById('messageInput').focus();
+});
+
+// Handle form submission
+document.getElementById('messageForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const input = document.getElementById('messageInput');
+    const content = input.value.trim();
+    
+    if (content) {
+        // Submit form normally
+        this.submit();
+    }
+});
+
+function sendTemplate(type) {
+    const templates = {
+        'interview': 'Assalomu alaykum! Sizning arizangiz muvaffaqiyatli ko\'rib chiqildi. Intervyu o\'tkazish uchun vaqtingizni qo\'yingiz.',
+        'rejected': 'Assalomu alaykum! Afsuski, sizning arizangiz hozircha mos kelmadi. Boshqa vakansiyalarimizga qiziqishingiz mumkin.',
+        'accepted': 'Tabriklaymiz! Sizni ishga qabul qildik. Ishga boshlash uchun kerakli hujjatlar ro\'yxatini yuboramiz.',
+        'info': 'Sizning savollaringiz uchun rahmat. Qo\'shimcha ma\'lumot: Ish vaqti 9:00-18:00, dushanba-juma.'
+    };
+    
+    document.getElementById('messageInput').value = templates[type];
+    document.getElementById('messageInput').focus();
+}
+
+
+function viewProfile() {
+    // Redirect to candidate profile or application detail
+    window.location.href = '/employer/applications/';
+}
+
+// Auto refresh messages every 30 seconds
+setInterval(function() {
+    // You can implement AJAX message refresh here
+}, 30000);
+</script>
+{% endblock employer_content %}

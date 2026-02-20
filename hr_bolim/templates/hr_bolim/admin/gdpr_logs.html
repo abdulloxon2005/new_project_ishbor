@@ -1,0 +1,82 @@
+{% extends 'hr_bolim/admin/base_admin.html' %}
+
+{% block title %}GDPR Loglari{% endblock %}
+
+{% block admin_content %}
+<div class="bg-white rounded-lg shadow">
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-gray-900">🛡️ GDPR Loglari</h2>
+            <div class="flex space-x-2">
+                <a href="?type=" class="px-3 py-1 text-sm {% if consent_type == '' %}bg-gray-900 text-white{% else %}bg-gray-100 text-gray-700{% endif %} rounded-lg">
+                    Barchasi
+                </a>
+                <a href="?type=privacy" class="px-3 py-1 text-sm {% if consent_type == 'privacy' %}bg-blue-100 text-blue-800{% else %}bg-gray-100 text-gray-700{% endif %} rounded-lg">
+                    Maxfiylik siyosati
+                </a>
+                <a href="?type=marketing" class="px-3 py-1 text-sm {% if consent_type == 'marketing' %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-700{% endif %} rounded-lg">
+                    Marketing
+                </a>
+                <a href="?type=job_application" class="px-3 py-1 text-sm {% if consent_type == 'job_application' %}bg-purple-100 text-purple-800{% else %}bg-gray-100 text-gray-700{% endif %} rounded-lg">
+                    Ish arizasi
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logs Table -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foydalanuvchi</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ruxsat turi</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Versiya</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Berilgan vaqti</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bekor qilingan</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP manzil</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for log in logs %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">{{ log.user.get_full_name|default:log.user.email }}</div>
+                        <div class="text-sm text-gray-500">{{ log.user.email }}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                            {% if log.consent_type == 'privacy' %}bg-blue-100 text-blue-800
+                            {% elif log.consent_type == 'marketing' %}bg-green-100 text-green-800
+                            {% else %}bg-purple-100 text-purple-800{% endif %}">
+                            {% if log.consent_type == 'privacy' %}Maxfiylik siyosati
+                            {% elif log.consent_type == 'marketing' %}Marketing
+                            {% else %}Ish arizasi{% endif %}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ log.policy_version }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ log.given_at|date:"d.m.Y H:i" }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {% if log.revoked_at %}
+                            <span class="text-red-600">{{ log.revoked_at|date:"d.m.Y H:i" }}</span>
+                        {% else %}
+                            <span class="text-green-600">Faol</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ log.ip_address|default:"-" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-6 py-12 text-center">
+                        <i class="fas fa-shield-alt text-gray-400 text-5xl mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">GDPR loglari yo'q</h3>
+                        <p class="text-gray-600">Hali hech qanday ruxsat berilmagan</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

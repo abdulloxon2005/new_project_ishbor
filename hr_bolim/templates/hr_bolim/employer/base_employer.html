@@ -1,0 +1,105 @@
+{% extends 'hr_bolim/base.html' %}
+{% load static %}
+
+{% block title %}Ish beruvchi - {% block sub_title %}{% endblock %}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Top Navigation Bar -->
+    <nav style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 1rem 2rem;">
+        <div style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <a href="{% url 'home' %}" style="font-weight: bold; font-size: 1.1rem; text-decoration: none; color: #222;">
+                    <i class="fas fa-home" style="margin-right: 0.5rem;"></i>HR Tizimi
+                </a>
+            </div>
+            
+            <div style="display: flex; gap: 2rem; align-items: center;">
+                <a href="{% url 'employer_dashboard' %}" class="{% if request.resolver_match.url_name == 'employer_dashboard' %}nav-link-active{% endif %}" style="text-decoration: none; color: #666; font-size: 0.95rem; padding: 0.5rem 1rem; border-bottom: {% if request.resolver_match.url_name == 'employer_dashboard' %}3px solid #3b82f6{% else %}none{% endif %};">
+                    Dashboard
+                </a>
+                <a href="{% url 'employer_jobs' %}" class="{% if 'employer_jobs' in request.resolver_match.url_name %}nav-link-active{% endif %}" style="text-decoration: none; color: #666; font-size: 0.95rem; padding: 0.5rem 1rem; border-bottom: {% if 'employer_jobs' in request.resolver_match.url_name %}3px solid #3b82f6{% else %}none{% endif %};">
+                    Vakansiyalar
+                </a>
+                <a href="{% url 'employer_applications' %}" class="{% if 'employer_applications' in request.resolver_match.url_name %}nav-link-active{% endif %}" style="text-decoration: none; color: #666; font-size: 0.95rem; padding: 0.5rem 1rem; border-bottom: {% if 'employer_applications' in request.resolver_match.url_name %}3px solid #3b82f6{% else %}none{% endif %};">
+                    Arizalar
+                </a>
+                <a href="{% url 'employer_interviews' %}" class="{% if request.resolver_match.url_name == 'employer_interviews' %}nav-link-active{% endif %}" style="text-decoration: none; color: #666; font-size: 0.95rem; padding: 0.5rem 1rem; border-bottom: {% if request.resolver_match.url_name == 'employer_interviews' %}3px solid #3b82f6{% else %}none{% endif %};">
+                    Intervyular
+                </a>
+                <a href="{% url 'employer_messages' %}" class="{% if 'employer_messages' in request.resolver_match.url_name %}nav-link-active{% endif %}" style="text-decoration: none; color: #666; font-size: 0.95rem; padding: 0.5rem 1rem; border-bottom: {% if 'employer_messages' in request.resolver_match.url_name %}3px solid #3b82f6{% else %}none{% endif %};">
+                    Xabarlar
+                </a>
+                <a href="{% url 'employer_profile' %}" class="{% if request.resolver_match.url_name == 'employer_profile' %}nav-link-active{% endif %}" style="text-decoration: none; color: #666; font-size: 0.95rem; padding: 0.5rem 1rem; border-bottom: {% if request.resolver_match.url_name == 'employer_profile' %}3px solid #3b82f6{% else %}none{% endif %};">
+                    Profil
+                </a>
+                <a href="{% url 'logout' %}" style="text-decoration: none; color: #dc2626; font-size: 0.95rem; padding: 0.5rem 1rem;">
+                    Chiqish
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Layout -->
+    <div style="max-width: 1400px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 350px 1fr; gap: 2rem;">
+        
+        <!-- Left Panel: Company Info -->
+        <aside style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Company Card -->
+            <div style="background: white; border-radius: 0.5rem; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
+                {% if user.company.profile.logo %}
+                    <img src="{{ user.company.profile.logo.url }}" alt="Logo" style="width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 1rem; object-fit: cover;">
+                {% else %}
+                    <div style="width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 1rem; background: #e5e7eb; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-building" style="font-size: 2rem; color: #9ca3af;"></i>
+                    </div>
+                {% endif %}
+                <h3 style="margin: 0.5rem 0; font-size: 1.1rem; color: #1f2937;">{{ user.company.company_name }}</h3>
+                <p style="color: #6b7280; font-size: 0.9rem; margin: 0.5rem 0;">{{ user.company.responsible_person }}</p>
+                <p style="color: #6b7280; font-size: 0.85rem; margin: 0.25rem 0;">Email: <strong>{{ user.company.email }}</strong></p>
+                <p style="color: #6b7280; font-size: 0.85rem; margin: 0.25rem 0;">Telefon: <strong>{{ user.company.phone }}</strong></p>
+                <p style="color: #6b7280; font-size: 0.85rem; margin: 0.25rem 0;">STIR: <strong>{{ user.company.stir }}</strong></p>
+                <div style="margin-top: 1rem;">
+                    {% if user.company.is_verified %}
+                        <span style="display: inline-block; background: #d1fae5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 0.25rem; font-size: 0.85rem;">✓ Tasdiqlangan</span>
+                    {% else %}
+                        <span style="display: inline-block; background: #fef2f2; color: #991b1b; padding: 0.25rem 0.75rem; border-radius: 0.25rem; font-size: 0.85rem;">⊘ Tasdiqlanmadi</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Statistics Card -->
+            <div style="background: white; border-radius: 0.5rem; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <h4 style="margin: 0 0 1rem; font-size: 1rem; color: #1f2937;">Statistika</h4>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div style="display: flex; justify-content: space-between; padding-bottom: 0.75rem; border-bottom: 1px solid #e5e7eb;">
+                        <span style="color: #6b7280; font-size: 0.95rem;">Jami vakansiyalar</span>
+                        <strong style="color: #1f2937; font-size: 1.1rem;">{{ total_jobs|default:0 }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding-bottom: 0.75rem; border-bottom: 1px solid #e5e7eb;">
+                        <span style="color: #6b7280; font-size: 0.95rem;">Jami arizalar</span>
+                        <strong style="color: #1f2937; font-size: 1.1rem;">{{ total_applications|default:0 }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #6b7280; font-size: 0.95rem;">Profil ko'rishlar</span>
+                        <strong style="color: #1f2937; font-size: 1.1rem;">{{ profile_views|default:0 }}</strong>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Panel: Main Content -->
+        <main>
+            {% block employer_content %}{% endblock %}
+        </main>
+    </div>
+</div>
+
+<style>
+    .nav-link-active {
+        color: #3b82f6 !important;
+        border-bottom: 3px solid #3b82f6 !important;
+    }
+</style>
+{% endblock %}

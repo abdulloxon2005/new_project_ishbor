@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ro'yxatdan o'tish - HR Tizimi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #64748b;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --border: #e2e8f0;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Onest', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            padding: 1rem;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        /* Left Side - Image/Branding */
+        .auth-sidebar {
+            flex: 1;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            color: white;
+            text-align: center;
+            position: relative;
+            display: none; /* Mobile default */
+        }
+
+        @media (min-width: 768px) {
+            .auth-sidebar {
+                display: flex;
+            }
+        }
+
+        .auth-sidebar-content h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .auth-sidebar-content p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        /* Right Side - Form */
+        .auth-main {
+            flex: 1.2;
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            /*justify-content: center;*/
+            position: relative;
+        }
+
+        .auth-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .auth-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Steps Animation */
+        .step-container {
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .step-container.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Role Cards */
+        .role-cards {
+            display: grid;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .role-card {
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-card:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .role-card.selected {
+            border-color: var(--primary);
+            background: #eff6ff;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+
+        .role-card.selected::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .role-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+        }
+
+        .role-info h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.25rem;
+        }
+
+        .role-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1.25rem;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1rem;
+            pointer-events: none;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 2.8rem; /* Space for icon */
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background-color: #f9fafb;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-input.error {
+            border-color: var(--danger);
+            background-color: #fef2f2;
+        }
+
+        /* Checkbox */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        .custom-checkbox {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--secondary);
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            position: relative;
+            margin-top: 2px;
+            transition: var(--transition);
+        }
+
+        .custom-checkbox:checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .custom-checkbox:checked::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: white;
+            font-size: 0.75rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .checkbox-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .checkbox-label a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 1px dashed var(--primary);
+        }
+        
+        .checkbox-label a:hover {
+            border-bottom-style: solid;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 0.9rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-text {
+            background: transparent;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        .btn-text:hover {
+            color: var(--text-main);
+            background: rgba(0,0,0,0.05);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Errors */
+        .errorlist {
+            list-style: none;
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            margin-left: 0.5rem;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal-overlay.open {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .modal-overlay.open .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .modal-close:hover {
+            background: #f1f5f9;
+            color: var(--danger);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        .modal-body h4 {
+            color: var(--text-main);
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .modal-body ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            text-align: right;
+        }
+        
+        .btn-modal-close {
+            background: var(--text-main);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .btn-modal-close:hover {
+            background: var(--text-secondary);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="auth-wrapper">
+        <!-- Sidebar -->
+        <div class="auth-sidebar">
+            <div class="auth-sidebar-content">
+                <h2>Kelajakni birga quramiz</h2>
+                <p>Eng yaxshi mutaxassislar va kompaniyalar uchrashadigan makon</p>
+            </div>
+            <!-- Decorative circles -->
+            <div style="position: absolute; width: 300px; height: 300px; background: rgba(255,255,255,0.1); border-radius: 50%; top: -50px; left: -100px;"></div>
+            <div style="position: absolute; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%; bottom: -50px; right: -50px;"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="auth-main">
+            
+            <form method="post" id="regForm">
+                {% csrf_token %}
+                
+                <!-- STEP 1: Role Selection -->
+                <div id="step1" class="step-container active">
+                    <div class="auth-header">
+                        <h1 class="auth-title">Xush kelibsiz! 👋</h1>
+                        <p class="auth-subtitle">Davom etish uchun o'z rolingizni tanlang</p>
+                    </div>
+
+                    <div class="role-cards">
+                        <label class="role-card" onclick="selectRole('candidate')">
+                            <input type="radio" name="role" value="candidate" style="display:none;" checked>
+                            <div class="role-icon">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <div class="role-info">
+                                <h3>Ish izlovchi</h3>
+                                <p>Orzuyingizdagi ishni toping, rezyume yarating va karyera quring</p>
+                            </div>
+                        </label>
+
+                        <label class="role-card" onclick="selectRole('employer')">
+                            <input type="radio" name="role" value="employer" style="display:none;">
+                            <div class="role-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div class="role-info">
+                                <h3>Ish beruvchi</h3>
+                                <p>Eng yaxshi iste'dodlarni toping va jamoangizni kengaytiring</p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">
+                        Davom etish <i class="fas fa-arrow-right"></i>
+                    </button>
+                    
+                    <div class="auth-footer">
+                        Hisobingiz bormi? <a href="{% url 'login' %}">Tizimga kirish</a>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Details -->
+                <div id="step2" class="step-container">
+                    <div class="auth-header">
+                        <h1 class="auth-title" id="form-title">Ma'lumotlar</h1>
+                        <p class="auth-subtitle">Ro'yxatdan o'tishni yakunlash uchun to'ldiring</p>
+                    </div>
+
+                    {% if form.errors %}
+                        <div style="background:#fef2f2; color:#b91c1c; padding:1rem; border-radius:12px; margin-bottom:1.5rem; font-size:0.9rem; border:1px solid #fecaca;">
+                            <i class="fas fa-exclamation-circle"></i> Iltimos, ma'lumotlarni to'g'ri kiriting.
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label class="form-label">Ism</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" name="first_name" class="form-input" placeholder="Ismingizni kiriting" value="{{ form.first_name.value|default:'' }}">
+                        </div>
+                        {% if form.first_name.errors %} <div class="errorlist">{{ form.first_name.errors.0 }}</div> {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Familiya</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user-tag input-icon"></i>
+                            <input type="text" name="last_name" class="form-input" placeholder="Familiyangizni kiriting" value="{{ form.last_name.value|default:'' }}">
+                        </div>
+                        {% if form.last_name.errors %} <div class="errorlist">{{ form.last_name.errors.0 }}</div> {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" name="email" class="form-input" placeholder="example@mail.com" value="{{ form.email.value|default:'' }}">
+                        </div>
+                        {% if form.email.errors %} <div class="errorlist">{{ form.email.errors.0 }}</div> {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Parol</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" name="password1" class="form-input" placeholder="********">
+                        </div>
+                        {% if form.password1.errors %} <div class="errorlist">{{ form.password1.errors.0 }}</div> {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Parolni tasdiqlash</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-check-circle input-icon"></i>
+                            <input type="password" name="password2" class="form-input" placeholder="********">
+                        </div>
+                        {% if form.password2.errors %} <div class="errorlist">{{ form.password2.errors.0 }}</div> {% endif %}
+                    </div>
+
+                    <div class="checkbox-wrapper">
+                        {{ form.consent_privacy }}
+                        <label class="checkbox-label" for="id_consent_privacy">
+                            Men saytning <a onclick="openModal('privacyModal')">Maxfiylik siyosati</a> bilan tanishdim va roziman.
+                        </label>
+                    </div>
+                    {% if form.consent_privacy.errors %} <div class="errorlist">{{ form.consent_privacy.errors.0 }}</div> {% endif %}
+
+                    <div class="checkbox-wrapper">
+                        {{ form.consent_data_processing }}
+                        <label class="checkbox-label" for="id_consent_data_processing">
+                            Shaxsiy ma'lumotlarim qayta ishlanishiga rozilik beraman.
+                        </label>
+                    </div>
+                    {% if form.consent_data_processing.errors %} <div class="errorlist">{{ form.consent_data_processing.errors.0 }}</div> {% endif %}
+
+                    <button type="submit" class="btn btn-primary">
+                        Ro'yxatdan o'tish <i class="fas fa-check"></i>
+                    </button>
+                    
+                    <button type="button" class="btn btn-text" onclick="prevStep()">
+                        <i class="fas fa-arrow-left"></i> Ortga qaytish
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Terms Modal -->
+    <div id="termsModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Foydalanish shartlari</h3>
+                <button class="modal-close" onclick="closeModal('termsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4>1. Umumiy qoidalar</h4>
+                <p>Ushbu platformadan foydalanish orqali siz mazkur shartlarga to'liq rozilik bildirasiz. Tizim ish beruvchilar va izlovchilarni bog'lash uchun xizmat qiladi.</p>
+                
+                <h4>2. Foydalanuvchi majburiyatlari</h4>
+                <p>Siz taqdim etayotgan ma'lumotlaringiz to'g'riligiga javobgarsiz. Soxta ma'lumotlar kiritish taqiqlanadi.</p>
+                
+                <h4>3. Hisob xavfsizligi</h4>
+                <p>O'z parolingizni sir saqlashingiz va uchinchi shaxslarga bermasligingiz shart.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-close" onclick="closeModal('termsModal')">Tushundim</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Modal -->
+    <div id="privacyModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Maxfiylik siyosati</h3>
+                <button class="modal-close" onclick="closeModal('privacyModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4>1. Ma'lumotlarni yig'ish</h4>
+                <p>Biz sizning ism, familiya, email va rezyume ma'lumotlaringizni xizmat ko'rsatish maqsadida yig'amiz.</p>
+                
+                <h4>2. Ma'lumotlardan foydalanish</h4>
+                <p>Sizning ma'lumotlaringiz faqat ishga joylashish jarayoni uchun ishlatiladi va ruxsatsiz uchinchi shaxslarga berilmaydi.</p>
+                
+                <h4>3. GDPR huquqlari</h4>
+                <p>Siz o'z ma'lumotlaringizni o'chirishni yoki nusxasini olishni talab qilish huquqiga egasiz. Buning uchun Admin panel orqali murojaat qilishingiz mumkin.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-close" onclick="closeModal('privacyModal')">Tushundim</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectRole(role) {
+            // Update UI
+            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+            const selectedCard = document.querySelector(`input[value="${role}"]`).closest('.role-card');
+            selectedCard.classList.add('selected');
+            
+            // Check radio button
+            document.querySelector(`input[value="${role}"]`).checked = true;
+        }
+
+        function nextStep() {
+            document.getElementById('step1').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('step1').style.display = 'none';
+                document.getElementById('step2').style.display = 'block';
+                // Trigger reflow
+                void document.getElementById('step2').offsetWidth; 
+                document.getElementById('step2').classList.add('active');
+            }, 300);
+        }
+
+        function prevStep() {
+            document.getElementById('step2').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('step2').style.display = 'none';
+                document.getElementById('step1').style.display = 'block';
+                // Trigger reflow
+                void document.getElementById('step1').offsetWidth;
+                document.getElementById('step1').classList.add('active');
+            }, 300);
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'flex';
+            // Trigger reflow
+            void modal.offsetWidth;
+            modal.classList.add('open');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('open');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                closeModal(event.target.id);
+            }
+        }
+
+        // Apply styles to Django rendered checkbox
+        document.addEventListener('DOMContentLoaded', function() {
+            const consentCheckbox = document.getElementById('id_consent_given');
+            if(consentCheckbox) {
+                consentCheckbox.classList.add('custom-checkbox');
+            }
+            
+            // Initialize selection
+            selectRole('candidate'); // Default
+
+            // If backend errors, go to step 2
+            {% if form.errors %}
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step1').style.display = 'none';
+                document.getElementById('step2').style.display = 'block';
+                document.getElementById('step2').classList.add('active');
+            {% endif %}
+        });
+    </script>
+</body>
+</html>

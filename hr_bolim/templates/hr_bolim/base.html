@@ -1,0 +1,348 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HR Talent Hub{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #4169FF;
+            --primary-purple: #7B4BFF;
+            --gradient-primary: linear-gradient(135deg, #4169FF 0%, #7B4BFF 100%);
+            --gradient-hero: linear-gradient(135deg, #4169FF 0%, #9B6BFF 50%, #B77BFF 100%);
+            --text-dark: #1a1a1a;
+            --text-gray: #666;
+            --bg-light: #F5F7FF;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 8px rgba(65, 105, 255, 0.08);
+            --shadow-md: 0 4px 20px rgba(65, 105, 255, 0.12);
+            --shadow-lg: 0 8px 32px rgba(65, 105, 255, 0.16);
+        }
+
+        body {
+            font-family: 'Onest', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: var(--white);
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Navigation */
+        .nav-link {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-blue);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-blue);
+            padding: 12px 24px;
+            border: 2px solid var(--primary-blue);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        /* Form inputs */
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(65, 105, 255, 0.1);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Messages */
+        .message {
+            padding: 16px 24px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border-left: 4px solid;
+        }
+
+        .message.success {
+            background: #f0fdf4;
+            border-color: #22c55e;
+            color: #166534;
+        }
+
+        .message.error {
+            background: #fef2f2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .message.info {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem 0;
+            }
+            
+            .nav-link {
+                padding: 8px 12px;
+            }
+            
+            .btn-primary,
+            .btn-secondary {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="{% url 'home' %}" class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">HR</span>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-900">Talent Hub</h1>
+                            <p class="text-sm text-gray-600">GDPR himoyalangan</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Navigation (soddalashtirilgan) -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Asosiy</a>
+                    <a href="{% url 'jobs_list' %}" class="nav-link {% if request.resolver_match.url_name == 'jobs_list' %}active{% endif %}">Vakansiyalar</a>
+                    <a href="{% url 'submit_complaint' %}" class="nav-link {% if request.resolver_match.url_name == 'submit_complaint' %}active{% endif %}">Shikoyat</a>
+                </nav>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="text-gray-600 hover:text-gray-900 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <nav id="mobileMenu" class="hidden md:hidden mt-4 pb-4">
+                <div class="flex flex-col space-y-3">
+                    <a href="{% url 'home' %}" class="nav-link">Asosiy</a>
+                    <a href="{% url 'jobs_list' %}" class="nav-link">Vakansiyalar</a>
+                    <a href="{% url 'submit_complaint' %}" class="nav-link">Shikoyat</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+            {% for message in messages %}
+                <div class="message {{ message.tags }} fade-in">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        <!-- Page content will be inserted here -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">HR Talent Hub</h3>
+                    <p class="text-gray-600">GDPR himoyalangan ish izlovchi va ish beruvchi platformasi</p>
+                </div>
+                <div>
+                    <h4 class="text-md font-semibold text-gray-900 mb-3">Tezkor havolalar</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'jobs_list' %}" class="text-gray-600 hover:text-gray-900">Vakansiyalar</a></li>
+                        <li><a href="{% url 'register' %}" class="text-gray-600 hover:text-gray-900">Ro'yxatdan o'tish</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-md font-semibold text-gray-900 mb-3">Yordam</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Qoidalar</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Maxfiylik siyosati</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Aloqa</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-md font-semibold text-gray-900 mb-3">Aloqa</h4>
+                    <div class="space-y-2">
+                        <p class="text-gray-600">📧 info@hrtalent.uz</p>
+                        <p class="text-gray-600">📞 +998 90 123-45-67</p>
+                        <div class="flex space-x-4 mt-3">
+                            <a href="#" class="text-gray-600 hover:text-gray-900">Facebook</a>
+                            <a href="#" class="text-gray-600 hover:text-gray-900">LinkedIn</a>
+                            <a href="#" class="text-gray-600 hover:text-gray-900">Telegram</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-200 mt-8 pt-8 text-center">
+                <p class="text-gray-600">&copy; 2024 HR Talent Hub. Barcha huquqlar himoyalangan.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // Auto-hide messages after 5 seconds
+        setTimeout(function() {
+            const messages = document.querySelectorAll('.message');
+            messages.forEach(function(message) {
+                message.style.opacity = '0';
+                setTimeout(function() {
+                    message.remove();
+                }, 300);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

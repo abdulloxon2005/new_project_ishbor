@@ -1,0 +1,39 @@
+<!-- Employer Sidebar Content -->
+<div class="sidebar-section">
+    <a href="{% url 'employer_dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'employer_dashboard' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-th"></i>
+        </div>
+        <div class="sidebar-link-text">Dashboard</div>
+    </a>
+    <a href="{% url 'employer_jobs' %}" class="sidebar-link {% if request.resolver_match.url_name == 'employer_jobs' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="sidebar-link-text">Vakansiyalar</div>
+    </a>
+    <a href="{% url 'employer_applications' %}" class="sidebar-link {% if request.resolver_match.url_name == 'employer_applications' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-file-alt"></i>
+        </div>
+        <div class="sidebar-link-text">Arizalar</div>
+    </a>
+    <a href="{% url 'employer_interviews' %}" class="sidebar-link {% if request.resolver_match.url_name == 'employer_interviews' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-video"></i>
+        </div>
+        <div class="sidebar-link-text">Intervyular</div>
+    </a>
+    <a href="{% url 'employer_messages' %}" class="sidebar-link {% if request.resolver_match.url_name == 'employer_messages' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-comment"></i>
+        </div>
+        <div class="sidebar-link-text">Xabarlar</div>
+    </a>
+    <a href="{% url 'employer_profile' %}" class="sidebar-link {% if request.resolver_match.url_name == 'employer_profile' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-user-cog"></i>
+        </div>
+        <div class="sidebar-link-text">Profil</div>
+    </a>
+</div>

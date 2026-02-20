@@ -1,0 +1,216 @@
+{% extends 'hr_bolim/base_with_sidebar.html' %}
+{% load static %}
+
+{% block sub_title %}Intervyu tayinlash{% endblock %}
+
+{% block employer_content %}
+<div class="max-w-4xl">
+        <!-- Candidate Info -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">👤 Nomzod ma'lumotlari</h3>
+            <div class="flex items-center space-x-4">
+                <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+                    <span class="text-gray-500 font-medium text-xl">{{ application.candidate.get_full_name|slice:":2"|upper }}</span>
+                </div>
+                <div>
+                    <h4 class="text-lg font-medium text-gray-900">{{ application.candidate.get_full_name }}</h4>
+                    <p class="text-gray-600">{{ application.candidate.email }}</p>
+                    <p class="text-sm text-gray-500 mt-1">Lavozim: {{ application.job.title }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interview Form -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">📅 Intervyu ma'lumotlari</h2>
+                <p class="text-gray-600 mt-1">Nomzod bilan intervyu uchun vaqt va joy belgilang</p>
+            </div>
+
+            <div class="p-6">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="mb-4 p-4 rounded-lg {% if message.tags == 'success' %}bg-green-50 text-green-800{% elif message.tags == 'error' %}bg-red-50 text-red-800{% else %}bg-blue-50 text-blue-800{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <div class="text-red-800">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Intervyu sanasi va vaqti *
+                            </label>
+                            {{ form.scheduled_date }}
+                            <p class="mt-1 text-sm text-gray-500">Nomzod uchun qulay vaqtni tanlang</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Davomiyligi (daqiqa) *
+                            </label>
+                            {{ form.duration_minutes }}
+                            <p class="mt-1 text-sm text-gray-500">Odatda 30-90 daqiqa</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Intervyu turi *
+                            </label>
+                            {{ form.interview_type }}
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Manzil/Havola
+                            </label>
+                            {{ form.location_link }}
+                            <p class="mt-1 text-sm text-gray-500">
+                                Video intervyu uchun Zoom/Google Meet havola,
+                                telefon intervyu uchun telefon raqami,
+                                ofisda intervyu uchun manzil
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Intervyu haqida izohlar
+                        </label>
+                        {{ form.notes }}
+                        <p class="mt-1 text-sm text-gray-500">
+                            Nomzodga yuboriladigan qo'shimcha ma'lumotlar
+                            (masalan: olib kelish kerak bo'lgan hujjatlar, intervyu tafsilotlari)
+                        </p>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div class="mt-8 p-6 bg-gray-50 rounded-lg">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">📧 Nomizodga yuboriladigan xabar</h3>
+                        <div class="bg-white rounded-lg p-4 border border-gray-200">
+                            <div class="text-sm text-gray-700">
+                                <p class="font-medium mb-2">Assalomu alaykum, {{ application.candidate.get_full_name }}!</p>
+                                <p class="mb-2">
+                                    Sizning <strong>{{ application.job.title }}</strong> lavozimiga topshirgan arizangiz muvaffaqiyatli ko'rib chiqildi.
+                                    Siz bilan intervyu tayinlandi.
+                                </p>
+                                <div class="bg-blue-50 p-3 rounded mb-2">
+                                    <p><strong>Sana va vaqt:</strong> <span id="previewDateTime">Tanlanmagan</span></p>
+                                    <p><strong>Davomiyligi:</strong> <span id="previewDuration">60 daqiqa</span></p>
+                                    <p><strong>Turi:</strong> <span id="previewType">Video intervyu</span></p>
+                                    <p><strong>Manzil/Havola:</strong> <span id="previewLocation">Ko'rsatilmagan</span></p>
+                                </div>
+                                {% if form.notes.value %}
+                                <div class="bg-yellow-50 p-3 rounded mb-2">
+                                    <p><strong>Qo'shimcha ma'lumotlar:</strong></p>
+                                    <p>{{ form.notes.value }}</p>
+                                </div>
+                                {% endif %}
+                                <p class="mb-2">
+                                    Iltimos, belgilangan vaqtda tayyor bo'ling. Agar vaqtingiz o'tmasa,
+                                    iltimos, biz bilan bog'laning.
+                                </p>
+                                <p>Hurmat bilan,<br>{{ company.company_name }} HR jamoasi</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end space-x-4">
+                        <a href="{% url 'application_detail' application.id %}" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                            Bekor qilish
+                        </a>
+                        <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700">
+                            Intervyuni tasdiqlash
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+textarea.form-input {
+    resize: vertical;
+    min-height: 120px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const scheduledDateInput = document.querySelector('input[name="scheduled_date"]');
+    const durationInput = document.querySelector('input[name="duration_minutes"]');
+    const typeSelect = document.querySelector('select[name="interview_type"]');
+    const locationInput = document.querySelector('input[name="location_link"]');
+
+    function updatePreview() {
+        const date = scheduledDateInput.value;
+        const duration = durationInput.value || '60';
+        const type = typeSelect.options[typeSelect.selectedIndex]?.text || 'Video intervyu';
+        const location = locationInput.value || 'Ko\'rsatilmagan';
+
+        if (date) {
+            const dateObj = new Date(date);
+            document.getElementById('previewDateTime').textContent = dateObj.toLocaleString('uz-UZ', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } else {
+            document.getElementById('previewDateTime').textContent = 'Tanlanmagan';
+        }
+
+        document.getElementById('previewDuration').textContent = duration + ' daqiqa';
+        document.getElementById('previewType').textContent = type;
+        document.getElementById('previewLocation').textContent = location;
+    }
+
+    // Add event listeners
+    [scheduledDateInput, durationInput, typeSelect, locationInput].forEach(input => {
+        if (input) {
+            input.addEventListener('input', updatePreview);
+            input.addEventListener('change', updatePreview);
+        }
+    });
+
+    // Set minimum date to today
+    const today = new Date().toISOString().slice(0, 16);
+    scheduledDateInput.min = today;
+
+    // Initial preview
+    updatePreview();
+});
+</script>
+{% endblock employer_content %}

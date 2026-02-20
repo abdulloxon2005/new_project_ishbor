@@ -1,0 +1,80 @@
+<!-- Candidate Sidebar Content -->
+<div class="sidebar-section">
+    <div class="sidebar-section-title">Asosiy</div>
+    <a href="{% url 'candidate_dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'candidate_dashboard' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-tachometer-alt"></i>
+        </div>
+        <div class="sidebar-link-text">Dashboard</div>
+        {% if request.resolver_match.url_name == 'candidate_dashboard' %}
+        <div class="sidebar-badge">Asosiy</div>
+        {% endif %}
+    </a>
+    <a href="{% url 'jobs_list' %}" class="sidebar-link {% if request.resolver_match.url_name == 'jobs_list' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="sidebar-link-text">Vakansiyalar</div>
+        {% if request.resolver_match.url_name == 'jobs_list' %}
+        <div class="sidebar-badge">Izlash</div>
+        {% endif %}
+    </a>
+    <a href="{% url 'my_applications' %}" class="sidebar-link {% if request.resolver_match.url_name == 'my_applications' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-file-alt"></i>
+        </div>
+        <div class="sidebar-link-text">Arizalarim</div>
+        {% if request.resolver_match.url_name == 'my_applications' %}
+        <div class="sidebar-badge">Arizalar</div>
+        {% endif %}
+    </a>
+    <a href="{% url 'candidate_interviews' %}" class="sidebar-link {% if request.resolver_match.url_name == 'candidate_interviews' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="sidebar-link-text">Intervyular</div>
+        {% if request.resolver_match.url_name == 'candidate_interviews' %}
+        <div class="sidebar-badge">Intervyu</div>
+        {% endif %}
+    </a>
+    <a href="{% url 'inbox' %}" class="sidebar-link {% if request.resolver_match.url_name == 'inbox' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-envelope"></i>
+        </div>
+        <div class="sidebar-link-text">Xabarlar</div>
+        {% if request.resolver_match.url_name == 'inbox' %}
+        <div class="sidebar-badge">Xabarlar</div>
+        {% endif %}
+    </a>
+</div>
+
+<div class="sidebar-section">
+    <div class="sidebar-section-title">Profil</div>
+    <a href="{% url 'candidate_profile' %}" class="sidebar-link {% if request.resolver_match.url_name == 'candidate_profile' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="sidebar-link-text">Profilim</div>
+        {% if request.resolver_match.url_name == 'candidate_profile' %}
+        <div class="sidebar-badge">Profil</div>
+        {% endif %}
+    </a>
+    <a href="{% url 'candidate_cv' %}" class="sidebar-link {% if request.resolver_match.url_name == 'candidate_cv' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-file-alt"></i>
+        </div>
+        <div class="sidebar-link-text">CV-larim</div>
+        {% if request.resolver_match.url_name == 'candidate_cv' %}
+        <div class="sidebar-badge">CV</div>
+        {% endif %}
+    </a>
+    <a href="{% url 'candidate_gdpr' %}" class="sidebar-link {% if request.resolver_match.url_name == 'candidate_gdpr' %}active{% endif %}">
+        <div class="sidebar-link-icon">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="sidebar-link-text">GDPR</div>
+        {% if request.resolver_match.url_name == 'candidate_gdpr' %}
+        <div class="sidebar-badge">Xavfsizlik</div>
+        {% endif %}
+    </a>
+</div>

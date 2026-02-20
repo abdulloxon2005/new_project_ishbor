@@ -1,0 +1,227 @@
+{% extends 'hr_bolim/base_with_sidebar.html' %}
+{% load static %}
+
+{% block sub_title %}Arizalar{% endblock %}
+
+{% block employer_content %}
+<div>
+        <!-- Filters -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select class="form-input" id="statusFilter">
+                        <option value="">Barchasi</option>
+                        <option value="new" {% if status_filter == 'new' %}selected{% endif %}>Yangi</option>
+                        <option value="reviewed" {% if status_filter == 'reviewed' %}selected{% endif %}>Ko'rilgan</option>
+                        <option value="interview" {% if status_filter == 'interview' %}selected{% endif %}>Intervyu</option>
+                        <option value="accepted" {% if status_filter == 'accepted' %}selected{% endif %}>Qabul qilingan</option>
+                        <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rad etilgan</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Vakansiya</label>
+                    <select class="form-input" id="jobFilter">
+                        <option value="">Barchasi</option>
+                        {% for job in jobs %}
+                            <option value="{{ job.id }}" {% if job_filter == job.id|stringformat:"s" %}selected{% endif %}>{{ job.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Qidirish</label>
+                    <input type="text" id="searchInput" placeholder="Nomzod nomi..." class="form-input" value="{{ request.GET.q }}">
+                </div>
+                <div class="flex items-end">
+                    <button onclick="filterApplications()" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        Filtrlash
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Applications List -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-lg font-semibold text-gray-900">Barcha arizalar ({{ applications.count }})</h2>
+                    <div class="flex space-x-2">
+                        <button onclick="exportApplications()" class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200">
+                            📊 Export
+                        </button>
+                        <button onclick="bulkActions()" class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200">
+                            ⚡ Bulk actions
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="divide-y divide-gray-200">
+                {% for application in applications %}
+                <div class="p-6 hover:bg-gray-50 application-item" data-status="{{ application.status }}" data-candidate="{{ application.candidate.get_full_name|lower }}" data-job="{{ application.job.title|lower }}">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3">
+                                {% if candidate_profile %}
+                                    {% if candidate_profile.profile_picture %}
+                                        <img src="{{ candidate_profile.profile_picture.url }}" alt="{{ application.candidate.get_full_name }}" class="w-12 h-12 rounded-full object-cover">
+                                    {% else %}
+                                        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                                            <span class="text-gray-500 font-medium">{{ application.candidate.get_full_name|slice:":2"|upper }}</span>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                                        <span class="text-gray-500 font-medium">{{ application.candidate.get_full_name|slice:":2"|upper }}</span>
+                                    </div>
+                                {% endif %}
+                                
+                                <div>
+                                    <h3 class="text-lg font-medium text-gray-900">{{ application.candidate.get_full_name }}</h3>
+                                    <p class="text-gray-600">{{ application.candidate.email }}</p>
+                                    {% if candidate_profile and candidate_profile.profession %}
+                                        <p class="text-sm text-gray-500">{{ candidate_profile.profession }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <span class="font-medium text-gray-700">Lavozim:</span>
+                                    <p class="text-gray-600">{{ application.job.title }}</p>
+                                </div>
+                                <div>
+                                    <span class="font-medium text-gray-700">Ariza sanasi:</span>
+                                    <p class="text-gray-600">{{ application.applied_at|date:"d.m.Y H:i" }}</p>
+                                </div>
+                                <div>
+                                    <span class="font-medium text-gray-700">CV:</span>
+                                    {% if application.resume_file %}
+                                        <a href="{{ application.resume_file.url }}" target="_blank" class="text-blue-600 hover:text-blue-800">📄 Yuklab olish</a>
+                                    {% else %}
+                                        <span class="text-gray-500">CV yo'q</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            {% if application.cover_letter %}
+                            <div class="mt-3">
+                                <span class="font-medium text-gray-700">Motivatsion xat:</span>
+                                <p class="text-gray-600 mt-1 text-sm">{{ application.cover_letter|truncatewords:30 }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if application.internal_notes %}
+                            <div class="mt-3">
+                                <span class="font-medium text-gray-700">Ichki izohlar:</span>
+                                <p class="text-gray-600 mt-1 text-sm">{{ application.internal_notes|truncatewords:20 }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="ml-4 flex flex-col items-end space-y-2">
+                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full 
+                                {% if application.status == 'new' %}bg-red-100 text-red-800
+                                {% elif application.status == 'reviewed' %}bg-yellow-100 text-yellow-800
+                                {% elif application.status == 'interview' %}bg-blue-100 text-blue-800
+                                {% elif application.status == 'accepted' %}bg-green-100 text-green-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ application.get_status_display }}
+                            </span>
+                            
+                            <div class="flex space-x-2">
+                                <a href="{% url 'application_detail' application.id %}" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg" title="Batafsil">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                </a>
+                                
+                                {% if application.status != 'interview' %}
+                                    <a href="{% url 'schedule_interview' application.id %}" class="p-2 text-green-600 hover:bg-green-50 rounded-lg" title="Intervyu">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </a>
+                                {% endif %}
+                                
+                                <button onclick="sendMessage('{{ application.candidate.id }}')" class="p-2 text-purple-600 hover:bg-purple-50 rounded-lg" title="Xabar yuborish">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="p-12 text-center">
+                    <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Arizalar yo'q</h3>
+                    <p class="text-gray-600 mb-4">Hali hech kim ariza topshirmagan</p>
+                    <a href="{% url 'employer_jobs' %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        Vakansiyalarni ko'rish
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+</div>
+
+<style>
+.form-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+</style>
+
+<script>
+function filterApplications() {
+    const status = document.getElementById('statusFilter').value;
+    const job = document.getElementById('jobFilter').value;
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    
+    const url = new URL(window.location);
+    if (status) url.searchParams.set('status', status);
+    else url.searchParams.delete('status');
+    
+    if (job) url.searchParams.set('job', job);
+    else url.searchParams.delete('job');
+    
+    if (search) url.searchParams.set('q', search);
+    else url.searchParams.delete('q');
+    
+    window.location.href = url.toString();
+}
+
+function sendMessage(candidateId) {
+    window.location.href = `/employer/chat/${candidateId}/`;
+}
+
+function exportApplications() {
+    alert('Export funksiyasi tez orada qo\'shiladi');
+}
+
+function bulkActions() {
+    alert('Bulk actions funksiyasi tez orada qo\'shiladi');
+}
+
+// Real-time search
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        filterApplications();
+    }
+});
+</script>
+{% endblock employer_content %}

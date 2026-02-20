@@ -1,0 +1,1030 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Talent Hub - GDPR Himoyasi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #4169FF;
+            --primary-purple: #7B4BFF;
+            --gradient-primary: linear-gradient(135deg, #4169FF 0%, #7B4BFF 100%);
+            --gradient-hero: linear-gradient(135deg, #4169FF 0%, #9B6BFF 50%, #B77BFF 100%);
+            --text-dark: #1a1a1a;
+            --text-gray: #666;
+            --bg-light: #F5F7FF;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 8px rgba(65, 105, 255, 0.08);
+            --shadow-md: 0 4px 20px rgba(65, 105, 255, 0.12);
+            --shadow-lg: 0 8px 32px rgba(65, 105, 255, 0.16);
+        }
+
+        body {
+            font-family: 'Onest', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: var(--white);
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::before {
+            content: '💼';
+            font-size: 24px;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: 0.875rem 2rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 0;
+            background: var(--bg-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(65, 105, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-50px, 50px) scale(1.1); }
+        }
+
+        .hero-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-content {
+            animation: fadeInLeft 0.8s ease-out;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(65, 105, 255, 0.1);
+            color: var(--primary-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 24px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge::before {
+            content: '🛡️';
+        }
+
+        .hero-title {
+            font-size: 4rem; /* Larger font */
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #D946EF 100%); /* Adjusted gradient */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 3.5rem; /* Larger font */
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 2rem;
+            line-height: 1.2;
+        }
+
+        .hero-description {
+            font-size: 1.125rem;
+            color: var(--text-gray);
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-dark);
+            padding: 0.875rem 2rem;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0; /* Thinner border */
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .hero-image {
+            position: relative;
+            animation: fadeInRight 0.8s ease-out;
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .image-card img {
+        width: 100%;
+        height: 500px;       /* Balandlikni oshiring */
+        object-fit: cover;   /* Rasmni to'g'ri ko'rsatish */
+        border-radius: 16px;
+    }
+
+        .stats-badge {
+        position: absolute;
+        bottom: -2rem;
+        left: -1rem;
+        background: var(--white);
+        padding: 1rem 1.5rem;        /* Kichikroq padding */
+        border-radius: 12px;         /* Kichikroq radius */
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;                /* Kichikroq gap */
+        animation: slideUp 0.8s ease-out 0.4s both;
+        transform: scale(0.85);      /* 85% kichiklashtirish */
+    }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .check-icon {
+        width: 32px;          /* 40px dan 32px ga */
+        height: 32px;
+        background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 16px;      /* 20px dan 16px ga */
+    }
+
+    .stats-text h4 {
+        font-size: 1rem;      /* 1.25rem dan 1rem ga */
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .stats-text p {
+        font-size: 0.75rem;   /* 0.875rem dan 0.75rem ga */
+        color: var(--text-gray);
+    }
+
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            margin-top: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        /* Features Section */
+        .features-intro {
+            text-align: center;
+            padding: 6rem 0 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            padding: 0 0 6rem;
+        }
+
+        .feature-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 2px solid #f0f0f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 1.5rem;
+        }
+
+        .icon-blue {
+            background: linear-gradient(135deg, rgba(65, 105, 255, 0.1) 0%, rgba(65, 105, 255, 0.2) 100%);
+        }
+
+        .icon-purple {
+            background: linear-gradient(135deg, rgba(123, 75, 255, 0.1) 0%, rgba(123, 75, 255, 0.2) 100%);
+        }
+
+        .icon-pink {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(236, 72, 153, 0.2) 100%);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            background: var(--bg-light);
+            padding: 6rem 0;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+            position: relative;
+        }
+
+        .steps-grid::before {
+            content: '';
+            position: absolute;
+            top: 50px;
+            left: 16.66%;
+            right: 16.66%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
+            z-index: 0;
+        }
+
+        .step-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            box-shadow: var(--shadow-md);
+        }
+
+        .step-number {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 0 auto 1.5rem;
+        }
+
+        .step-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .step-card p {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* GDPR Section */
+        .gdpr-section {
+            padding: 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gdpr-container {
+            background: var(--gradient-hero);
+            border-radius: 32px;
+            padding: 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gdpr-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            filter: blur(80px);
+        }
+
+        .gdpr-content {
+            position: relative;
+            z-index: 1;
+            color: var(--white);
+        }
+
+        .gdpr-content h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .gdpr-content h2::before {
+            content: '🛡️';
+            font-size: 3rem;
+        }
+
+        .gdpr-content p {
+            font-size: 1.125rem;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+        }
+
+        .gdpr-features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .gdpr-feature {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .gdpr-feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .gdpr-feature h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .gdpr-button {
+            background: var(--white);
+            color: var(--primary-blue);
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .gdpr-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 0;
+            background: var(--bg-light);
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.25rem;
+            color: var(--text-gray);
+            margin-bottom: 3rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1d2e;
+            color: var(--white);
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        .footer-column h4 {
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero-container,
+            .features-grid,
+            .steps-grid,
+            .gdpr-features,
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .steps-grid::before {
+                display: none;
+            }
+
+            .gdpr-container {
+                padding: 3rem 2rem;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animation on Scroll */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="{% url 'home' %}" class="logo">
+                    <div class="logo-icon"></div>
+                    HR Talent Hub
+                </a>
+                <div class="nav-menu">
+                    {% if user.is_authenticated %}
+                         <span class="nav-link">Salom, {{ user.first_name }}</span>
+                         <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-primary" style="background:none; border:none; color:var(--text-dark); padding:0; font:inherit; cursor:pointer;" onmouseover="this.style.color='var(--primary-blue)'" onmouseout="this.style.color='var(--text-dark)'">Chiqish</button>
+                         </form>
+                         {% if user.role == 'candidate' %}
+                             <a href="{% url 'candidate_dashboard' %}" class="btn-primary">Kabinet</a>
+                         {% elif user.role == 'employer' %}
+                             <a href="{% url 'employer_dashboard' %}" class="btn-primary">Kabinet</a>
+                         {% else %}
+                             <a href="{% url 'home' %}" class="btn-primary">Kabinet</a>
+                         {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}" class="nav-link">Kirish</a>
+                        <a href="{% url 'register' %}" class="btn-primary">Ro'yxatdan o'tish</a>
+                    {% endif %}
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="badge">GDPR Himoyalangan</div>
+                    <h1 class="hero-title">Kelajak kadrlarini</h1>
+                    <h2 class="hero-subtitle">bugun toping! 🚀</h2>
+                    <p class="hero-description">
+                        Zamonaviy, xavfsiz va GDPR qoidalariga to'liq mos keladigan HR recruitment platformasi. 
+                        Nomzodlar va HR uchun maksimal qulay interfeys.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="{% url 'jobs_list' %}" class="btn-primary">Ish izlash &rarr;</a>
+                        <a href="#" class="btn-secondary">HR uchun</a>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-value">100%</div>
+                            <div class="stat-label">GDPR Mos</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">24/7</div>
+                            <div class="stat-label">Mavjud</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">∞</div>
+                            <div class="stat-label">Imkoniyatlar</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="image-card">
+                        <img src="{% static 'images/salom.jpg' %}" alt="HR Talent Hub">
+                        {% comment %} <svg width="100%" height="400" viewBox="0 0 600 400">
+                            <rect width="600" height="400" fill="#f0f4ff" rx="16"/>
+                            <circle cx="300" cy="200" r="80" fill="#4169FF" opacity="0.1"/>
+                            <circle cx="200" cy="150" r="60" fill="#7B4BFF" opacity="0.15"/>
+                            <circle cx="400" cy="250" r="70" fill="#9B6BFF" opacity="0.1"/>
+                            <rect x="150" y="100" width="300" height="200" fill="white" rx="12" opacity="0.9"/>
+                            <rect x="180" y="130" width="100" height="8" fill="#4169FF" rx="4" opacity="0.3"/>
+                            <rect x="180" y="150" width="240" height="6" fill="#ccc" rx="3"/>
+                            <rect x="180" y="165" width="200" height="6" fill="#ccc" rx="3"/>
+                            <circle cx="210" cy="230" r="30" fill="#4169FF" opacity="0.2"/>
+                            <circle cx="210" cy="230" r="20" fill="#4169FF" opacity="0.4"/>
+                            <rect x="260" y="215" width="100" height="8" fill="#4169FF" rx="4" opacity="0.3"/>
+                            <rect x="260" y="230" width="140" height="6" fill="#ccc" rx="3"/>
+                        </svg> {% endcomment %}
+                    </div>
+                    <div class="stats-badge">
+                        <div class="check-icon">✓</div>
+                        <div class="stats-text">
+                            <h4>500+</h4>
+                            <p>Muvaffaqiyatli ishga joylashish</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Intro -->
+    <section class="features-intro">
+        <div class="container">
+            <h2 class="section-title">Nima uchun <span style="background: linear-gradient(135deg, #4169FF 0%, #7B4BFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">bizni tanlash kerak?</span></h2>
+            <p class="section-subtitle">Zamonaviy texnologiyalar va GDPR xavfsizligi</p>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section>
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon icon-blue">🛡️</div>
+                    <h3>GDPR Himoyasi</h3>
+                    <p>To'liq GDPR qoidalariga mos. Sizning ma'lumotlaringiz maksimal xavfsizlikda.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon icon-purple">🔐</div>
+                    <h3>Ma'lumotlar Shifrlash</h3>
+                    <p>Barcha shaxsiy ma'lumotlar shifrlangan holатда saqlanadi va himoyalanadi.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon icon-pink">📄</div>
+                    <h3>Rozilik Boshqaruvi</h3>
+                    <p>Siz o'z ma'lumotlaringizni boshqarishingiz va istalgan vaqt o'chirishingiz mumkin.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon icon-blue">📋</div>
+                    <h3>Nomzodlar uchun</h3>
+                    <p>CV yuklash, vakansiyalarga ariza berish va o'z profilingizni boshqarish.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon icon-purple">💼</div>
+                    <h3>HR uchun</h3>
+                    <p>Nomzodlarni ko'rish, filtrlash, izohlar qo'shish va boshqarish.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon icon-pink">⚡</div>
+                    <h3>Tez va Oson</h3>
+                    <p>Intuitiv interfeys va tez ishlash. Hech qanday ortiqcha murakkablik yo'q.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="features-intro">
+                <h2 class="section-title">Qanday ishlaydi? 🎯</h2>
+                <p class="section-subtitle">Uchta oddiy qadamda ish topish yoki xodim yollash</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">1</div>
+                    <h3>Ro'yxatdan o'ting</h3>
+                    <p>Email va parol bilan tez ro'yxatdan o'ting. GDPR roziligini tasdiqlang.</p>
+                </div>
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">2</div>
+                    <h3>Profil to'ldiring</h3>
+                    <p>Shaxsiy ma'lumotlar, CV va malakalaringizni kiriting.</p>
+                </div>
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">3</div>
+                    <h3>Ishni boshlang</h3>
+                    <p>Vakansiyalarga ariza bering yoki nomzodlarni ko'ring va tanlang.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GDPR Section -->
+    <section class="gdpr-section">
+        <div class="container">
+            <div class="gdpr-container">
+                <div class="gdpr-content">
+                    <h2>GDPR Himoyasi</h2>
+                    <p>Biz Evropa Ittifoqining umumiy ma'lumotlar himoyasi qoidalariga (GDPR) to'liq amal qilamiz. Sizning ma'lumotlaringiz va maxfiyligingiz bizning ustuvor vazifamiz.</p>
+                    <div class="gdpr-features">
+                        <div class="gdpr-feature">
+                            <div class="gdpr-feature-icon">🔒</div>
+                            <h4>Shifrlangan ma'lumotlar</h4>
+                        </div>
+                        <div class="gdpr-feature">
+                            <div class="gdpr-feature-icon">✅</div>
+                            <h4>Rozilik boshqaruvi</h4>
+                        </div>
+                        <div class="gdpr-feature">
+                            <div class="gdpr-feature-icon">🗑️</div>
+                            <h4>Ma'lumotlarni o'chirish huquqi</h4>
+                        </div>
+                        <div class="gdpr-feature">
+                            <div class="gdpr-feature-icon">📊</div>
+                            <h4>Shaffof maxfiylik siyosati</h4>
+                        </div>
+                    </div>
+                    <button class="gdpr-button">Maxfiylik siyosatini o'qish →</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="animate-on-scroll">Keling, birga <span style="background: linear-gradient(135deg, #4169FF 0%, #7B4BFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">boshlaymiz!</span> 🎉</h2>
+            <p class="animate-on-scroll">Bugun ro'yxatdan o'ting va kelajakdagi ish yoki xodimni toping</p>
+            <div class="cta-buttons animate-on-scroll">
+                <a href="#" class="btn-primary">Nomzod sifatida boshlash 💡</a>
+                <a href="#" class="btn-primary" style="background: linear-gradient(135deg, #7B4BFF 0%, #9B6BFF 100%);">HR sifatida boshlash 💼</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>💼 HR Talent Hub</h3>
+                    <p>GDPR qoidalariga mos zamonaviy recruitment platformasi</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Platforma</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Nomzodlar uchun</a></li>
+                        <li><a href="#">HR uchun</a></li>
+                        <li><a href="#">Vakansiyalar</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Hujjatlar</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Maxfiylik siyosati</a></li>
+                        <li><a href="#">Foydalanish shartlari</a></li>
+                        <li><a href="#">GDPR</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Aloqa</h4>
+                    <ul class="footer-links">
+                        <li><a href="mailto:info@hrtalenthub.com">📧 info@hrtalenthub.com</a></li>
+                        <li><a href="tel:+998991234567">📞 +998 99 123 45 67</a></li>
+                        <li><a href="#">📍 Toshkent, O'zbekiston</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2026 HR Talent Hub. Barcha huquqlar himoyalangan. GDPR qoidalariga mos.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Animate on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach((el) => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
