@@ -322,6 +322,9 @@
         </div>
     </footer>
 
+    <!-- Hidden logout form (submitted via JS when any logout link is clicked) -->
+    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display:none;">{% csrf_token %}</form>
+
     <script>
         // Mobile menu toggle
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -343,6 +346,25 @@
                 }, 300);
             });
         }, 5000);
+    </script>
+    <script>
+        // Intercept clicks on any <a> that points to the logout URL and submit POST form instead
+        (function(){
+            var logoutUrl = "{% url 'logout' %}";
+            document.addEventListener('click', function(e){
+                var el = e.target;
+                while(el && el.tagName !== 'A') el = el.parentElement;
+                if(!el) return;
+                try{
+                    var href = el.getAttribute('href');
+                    if(href === logoutUrl){
+                        e.preventDefault();
+                        var f = document.getElementById('logout-form');
+                        if(f) f.submit();
+                    }
+                }catch(err){/* ignore */}
+            }, false);
+        })();
     </script>
 </body>
 </html>
