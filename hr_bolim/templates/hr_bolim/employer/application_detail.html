@@ -194,7 +194,7 @@
                             </svg>
                             <div>
                                 <p class="font-medium">CV</p>
-                                <p class="text-sm text-gray-600">{{ application.resume_file.name|split:"/"|last }}</p>
+                                <p class="text-sm text-gray-600">{{ application.resume_file.name|cut:"/" }}</p>
                             </div>
                         </div>
                         <a href="{{ application.resume_file.url }}" target="_blank" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">

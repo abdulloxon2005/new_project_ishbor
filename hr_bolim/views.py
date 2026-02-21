@@ -8,7 +8,6 @@ from django.db.models import Q, Count, Avg
 from types import SimpleNamespace
 from django.utils import timezone
 from django.contrib import messages
-from django.utils import timezone
 from django.http import JsonResponse
 from django.core.mail import send_mail
 from django.conf import settings
@@ -188,9 +187,9 @@ def dashboard_view(request):
 def candidate_dashboard(request):
     
     profile, created = CandidateProfile.objects.get_or_create(user=request.user)
-    applied_count = Application.objects.filter(user=request.user).count()
+    applied_count = CandidateApplication.objects.filter(candidate=request.user).count()
     saved_count = SavedJob.objects.filter(user=request.user).count()
-    interview_count = Application.objects.filter(user=request.user, status='interview').count()
+    interview_count = CandidateApplication.objects.filter(candidate=request.user, status='interview').count()
     unread_messages = Message.objects.filter(recipient=request.user, is_read=False).count()
     
     context = {

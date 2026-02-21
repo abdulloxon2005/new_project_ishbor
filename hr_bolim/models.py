@@ -16,7 +16,7 @@ class User(AbstractUser):
     consent_date = models.DateTimeField(blank=True,null=True)
     consent_policy_version = models.CharField(max_length=10,blank=True,null=True)
     data_retention_until = models.DateTimeField(blank=True,null=True)
-    is_delete = models .BooleanField(default=False)
+    is_delete = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
     
