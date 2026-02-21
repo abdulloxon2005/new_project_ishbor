@@ -73,14 +73,7 @@
                         <i class="fas fa-shield-alt mr-3"></i>
                         GDPR Loglar
                     </a>
-                    <a href="{% url 'admin_data_requests' %}" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium rounded-lg {% if request.resolver_match.url_name == 'admin_data_requests' %}active{% else %}text-gray-700 hover:bg-gray-100{% endif %}">
-                        <i class="fas fa-database mr-3"></i>
-                        Data So'rovlar
-                    </a>
-                    <a href="{% url 'admin_complaints' %}" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium rounded-lg {% if request.resolver_match.url_name == 'admin_complaints' %}active{% else %}text-gray-700 hover:bg-gray-100{% endif %}">
-                        <i class="fas fa-exclamation-triangle mr-3"></i>
-                        Shikoyatlar
-                    </a>
+                    
                 </div>
             </nav>
             

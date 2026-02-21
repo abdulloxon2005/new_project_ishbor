@@ -154,6 +154,8 @@ def register_view(request):
             login(request, user)
             if user.role == 'candidate':
                 return redirect('candidate_dashboard')
+            elif user.role == 'employer':
+                return redirect('employer_dashboard')
             return redirect('home')
     else:
         form = CustomUserCreationForm()
@@ -165,6 +167,9 @@ class CustomLoginView(LoginView):
 
     def get_success_url(self):
         return '/dashboard/'
+
+def privacy_policy_view(request):
+    return render(request, 'candidate/privacy.html')
 
 @login_required
 def dashboard_view(request):
@@ -634,13 +639,10 @@ def candidate_gdpr(request):
 def employer_dashboard(request):
     
     try:
-        company = request.user.company
-        profile = CompanyProfile.objects.get(company=company)
+        company = Company.objects.get(user=request.user)
+        profile, created = CompanyProfile.objects.get_or_create(company=company)
     except Company.DoesNotExist:
         return redirect('employer_register')
-    except CompanyProfile.DoesNotExist:
-        # Create profile if it doesn't exist
-        profile = CompanyProfile.objects.create(company=company)
     
     # Statistics
     total_jobs = EmployerJob.objects.filter(company=company).count()
@@ -708,11 +710,13 @@ def employer_register(request):
     if request.user.role != 'employer':
         return redirect('home')
     
+    # Check if already registered
     try:
-        # Check if already registered
-        company = request.user.company
+        company = Company.objects.get(user=request.user)
+        # Company already exists, redirect to dashboard
         return redirect('employer_dashboard')
-    except:
+    except Company.DoesNotExist:
+        # No company yet, show registration form
         pass
     
     if request.method == 'POST':
@@ -724,8 +728,8 @@ def employer_register(request):
             company.consent_date = timezone.now()
             company.save()
             
-            # Create profile
-            CompanyProfile.objects.create(company=company)
+            # Create profile if it doesn't exist
+            CompanyProfile.objects.get_or_create(company=company)
             
             messages.success(request, "Kompaniya muvaffaqiyatli ro'yxatdan o'tkazildi!")
             return redirect('employer_dashboard')
@@ -739,7 +743,7 @@ def employer_register(request):
 def employer_profile(request):
     
     try:
-        company = request.user.company
+        company = Company.objects.get(user=request.user)
         profile = CompanyProfile.objects.get(company=company)
     except Company.DoesNotExist:
         return redirect('employer_register')
@@ -766,7 +770,7 @@ def employer_profile(request):
 @employer_required
 def employer_jobs(request):
     try:
-        company = request.user.company
+        company = Company.objects.get(user=request.user)
     except Company.DoesNotExist:
         return redirect('employer_register')
 
@@ -784,8 +788,8 @@ def create_job(request):
         return redirect('home')
     
     try:
-        company = request.user.company
-    except:
+        company = Company.objects.get(user=request.user)
+    except Company.DoesNotExist:
         return redirect('employer_register')
     
     if request.method == 'POST':
@@ -817,9 +821,9 @@ def edit_job(request, job_id):
         return redirect('home')
     
     try:
-        company = request.user.company
+        company = Company.objects.get(user=request.user)
         job = EmployerJob.objects.get(id=job_id, company=company)
-    except:
+    except (Company.DoesNotExist, EmployerJob.DoesNotExist):
         return redirect('employer_jobs')
     
     if request.method == 'POST':
@@ -839,11 +843,11 @@ def delete_job(request, job_id):
         return redirect('home')
     
     try:
-        company = request.user.company
+        company = Company.objects.get(user=request.user)
         job = EmployerJob.objects.get(id=job_id, company=company)
         job.delete()
         messages.warning(request, "Vakansiya o'chirildi.")
-    except:
+    except (Company.DoesNotExist, EmployerJob.DoesNotExist):
         pass
     
     return redirect('employer_jobs')
@@ -854,8 +858,8 @@ def employer_applications(request):
         return redirect('home')
     
     try:
-        company = request.user.company
-    except:
+        company = Company.objects.get(user=request.user)
+    except Company.DoesNotExist:
         return redirect('employer_register')
     
     applications = CandidateApplication.objects.filter(
@@ -889,12 +893,12 @@ def application_detail(request, application_id):
         return redirect('home')
     
     try:
-        company = request.user.company
+        company = Company.objects.get(user=request.user)
         application = CandidateApplication.objects.get(
             id=application_id, 
             job__company=company
         )
-    except:
+    except (Company.DoesNotExist, CandidateApplication.DoesNotExist):
         return redirect('employer_applications')
     
     if request.method == 'POST':
@@ -926,12 +930,12 @@ def schedule_interview(request, application_id):
         return redirect('home')
     
     try:
-        company = request.user.company
+        company = Company.objects.get(user=request.user)
         application = CandidateApplication.objects.get(
             id=application_id, 
             job__company=company
         )
-    except:
+    except (Company.DoesNotExist, CandidateApplication.DoesNotExist):
         return redirect('employer_applications')
     
     if request.method == 'POST':
@@ -962,12 +966,12 @@ def employer_statistics(request):
         return redirect('home')
     
     try:
-        company = request.user.company
+        company = Company.objects.get(user=request.user)
         profile = CompanyProfile.objects.get(company=company)
     except Company.DoesNotExist:
         return redirect('employer_register')
     except CompanyProfile.DoesNotExist:
-        return redirect('employer_register')
+        profile = CompanyProfile.objects.create(company=company)
     
     # Basic stats
     total_jobs = EmployerJob.objects.filter(company=company).count()
@@ -1013,8 +1017,8 @@ def employer_messages(request):
         return redirect('home')
     
     try:
-        company = request.user.company
-    except:
+        company = Company.objects.get(user=request.user)
+    except Company.DoesNotExist:
         return redirect('employer_register')
     
     # Get all conversations
@@ -1047,8 +1051,8 @@ def employer_chat_detail(request, user_id):
         return redirect('home')
     
     try:
-        company = request.user.company
-    except:
+        company = Company.objects.get(user=request.user)
+    except Company.DoesNotExist:
         return redirect('employer_register')
     
     other_user = get_object_or_404(User, id=user_id)
@@ -1104,7 +1108,7 @@ def job_detail(request, job_id):
 def employer_interviews(request):
     """Show all interviews for employer's applications"""
     try:
-        company = request.user.company
+        company = Company.objects.get(user=request.user)
     except Company.DoesNotExist:
         return redirect('employer_register')
     
@@ -1186,11 +1190,10 @@ def admin_data_requests(request):
 
 @login_required
 def admin_complaints(request):
-    """Admin complaints view"""
+    """Admin complaints management"""
     if request.user.role != 'admin' and not request.user.is_superuser:
         return redirect('home')
     
-    # Assuming there's a Contact model for complaints
     complaints = Contact.objects.all().order_by('-sent_at')
     
     context = {
@@ -1198,3 +1201,11 @@ def admin_complaints(request):
     }
     return render(request, 'hr_bolim/admin/complaints.html', context)
 
+
+def custom_logout(request):
+    """Custom logout view that accepts both GET and POST requests"""
+    if request.method == 'POST' or request.method == 'GET':
+        logout(request)
+        messages.success(request, "Siz tizimdan muvaffaqiyatli chiqdingiz.")
+        return redirect('home')
+    return redirect('home')

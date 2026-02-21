@@ -743,10 +743,182 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 32px;
+            border-bottom: 1px solid #e5e7eb;
+            background: linear-gradient(135deg, #4169FF 0%, #7B4BFF 100%);
+            color: white;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .close:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-body {
+            padding: 0;
+            max-height: calc(90vh - 140px);
+            overflow-y: auto;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: #4169FF;
+            border-bottom-color: #4169FF;
+            background: white;
+        }
+
+        .tab-btn:hover {
+            color: #4169FF;
+            background: rgba(65, 105, 255, 0.05);
+        }
+
+        .tab-content {
+            padding: 32px;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content h3 {
+            color: #1e293b;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 24px 0 16px 0;
+            border-left: 4px solid #4169FF;
+            padding-left: 16px;
+        }
+
+        .tab-content h3:first-child {
+            margin-top: 0;
+        }
+
+        .tab-content p {
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .tab-content ul {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+
+        .tab-content li {
+            color: #475569;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .modal-footer {
+            padding: 24px 32px;
+            border-top: 1px solid #e5e7eb;
+            background: #f8fafc;
+            text-align: right;
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+                max-height: 95vh;
+            }
+
+            .modal-header {
+                padding: 20px 24px;
+            }
+
+            .modal-header h2 {
+                font-size: 1.25rem;
+            }
+
+            .tab-content {
+                padding: 24px 20px;
+            }
+
+            .tab-btn {
+                padding: 14px 16px;
+                font-size: 0.9rem;
+            }
+
+            .modal-footer {
+                padding: 20px 24px;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
         <div class="container">
             <nav class="nav">
@@ -847,7 +1019,7 @@
     <!-- Features Intro -->
     <section class="features-intro">
         <div class="container">
-            <h2 class="section-title">Nima uchun <span style="background: linear-gradient(135deg, #4169FF 0%, #7B4BFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">bizni tanlash kerak?</span></h2>
+            <h2 class="section-title">Nima uchun <span style="background: linear-gradient(135deg, #4169FF 0%, #7B4BFF 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">bizni tanlash kerak?</span></h2>
             <p class="section-subtitle">Zamonaviy texnologiyalar va GDPR xavfsizligi</p>
         </div>
     </section>
@@ -942,7 +1114,7 @@
                             <h4>Shaffof maxfiylik siyosati</h4>
                         </div>
                     </div>
-                    <button class="gdpr-button">Maxfiylik siyosatini o'qish →</button>
+                    <button type="button" class="gdpr-button" onclick="openPrivacyModal()">Maxfiylik siyosatini o'qish →</button>
                 </div>
             </div>
         </div>
@@ -951,14 +1123,119 @@
     <!-- CTA Section -->
     <section class="cta-section">
         <div class="container">
-            <h2 class="animate-on-scroll">Keling, birga <span style="background: linear-gradient(135deg, #4169FF 0%, #7B4BFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">boshlaymiz!</span> 🎉</h2>
+            <h2 class="animate-on-scroll">Keling, birga <span style="background: linear-gradient(135deg, #4169FF 0%, #7B4BFF 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">boshlaymiz!</span> 🎉</h2>
             <p class="animate-on-scroll">Bugun ro'yxatdan o'ting va kelajakdagi ish yoki xodimni toping</p>
             <div class="cta-buttons animate-on-scroll">
-                <a href="#" class="btn-primary">Nomzod sifatida boshlash 💡</a>
-                <a href="#" class="btn-primary" style="background: linear-gradient(135deg, #7B4BFF 0%, #9B6BFF 100%);">HR sifatida boshlash 💼</a>
+                <a href="{% url 'register' %}" class="btn-primary">Nomzod sifatida boshlash 💡</a>
+                <a href="{% url 'register' %}" class="btn-primary" style="background: linear-gradient(135deg, #7B4BFF 0%, #9B6BFF 100%);">HR sifatida boshlash 💼</a>
             </div>
         </div>
     </section>
+
+    <!-- Privacy & Terms Modal -->
+    <div id="privacyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Maxfiylik siyosati va Foydalanish shartlari</h2>
+                <span class="close" onclick="closePrivacyModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="showTab('privacy')">Maxfiylik siyosati</button>
+                    <button class="tab-btn" onclick="showTab('terms')">Foydalanish shartlari</button>
+                </div>
+                
+                <div id="privacy" class="tab-content active">
+                    <h3>1. Ma'lumotlarni yig'ish</h3>
+                    <p>HR Talent Hub platformasi foydalanuvchilardan quyidagi ma'lumotlarni yig'adi:</p>
+                    <ul>
+                        <li>Ism, familiya, email va telefon raqami</li>
+                        <li>Shaxsiy ma'lumotlar (tug'ilgan sana, manzil)</li>
+                        <li>Ta'lim va ish tajribasi ma'lumotlari</li>
+                        <li>CV va boshqa hujjatlar</li>
+                    </ul>
+
+                    <h3>2. Ma'lumotlardan foydalanish maqsadi</h3>
+                    <p>Biz yig'ilgan ma'lumotlarni quyidagi maqsadlarda foydalanamiz:</p>
+                    <ul>
+                        <li>Ish izlovchilar va ish beruvchilarni bog'lash</li>
+                        <li>Platforma funksiyalarini ta'minlash</li>
+                        <li>Xizmat sifatini yaxshilash</li>
+                        <li>Qonuniy talablarga rioya qilish</li>
+                    </ul>
+
+                    <h3>3. Ma'lumotlarni himoya qilish</h3>
+                    <p>Barcha ma'lumotlar zamonaviy shifrlash texnologiyalari bilan himoyalangan:</p>
+                    <ul>
+                        <li>SSL shifrlash</li>
+                        <li>Ma'lumotlarning muntazam zaxiralab olinishi</li>
+                        <li>Faqat ruxsat etilan xodimlar kirishi</li>
+                    </ul>
+
+                    <h3>4. Foydalanuvchi huquqlari</h3>
+                    <p>Har bir foydalanuvchi quyidagi huquqlarga ega:</p>
+                    <ul>
+                        <li>O'z ma'lumotlarini ko'rish huquqi</li>
+                        <li>Ma'lumotlarni tahrirlash huquqi</li>
+                        <li>Ma'lumotlarni o'chirish huquqi</li>
+                        <li>Ma'lumotlarni eksport qilish huquqi</li>
+                    </ul>
+
+                    <h3>5. Ma'lumotlarni saqlash muddati</h3>
+                    <p>Foydalanuvchi ma'lumotlari quyidagicha saqlanadi:</p>
+                    <ul>
+                        <li>Akkount faol bo'lsa - cheksiz muddatga</li>
+                        <li>Akkautni o'chirgandan so'ng - 30 kun ichida</li>
+                        <li>Qonun talab qiladigan hollarda - kerakli muddatga</li>
+                    </ul>
+                </div>
+
+                <div id="terms" class="tab-content">
+                    <h3>1. Umumiy shartlar</h3>
+                    <p>HR Talent Hub platformasidan foydalanish quyidagi shartlarga bog'liq:</p>
+                    <ul>
+                        <li>18 yoshdan oshgan bo'lish kerak</li>
+                        <li>To'g'ri ma'lumotlar kiritish</li>
+                        <li>Platforma qoidalariga rioya qilish</li>
+                    </ul>
+
+                    <h3>2. Foydalanuvchi majburiyatlari</h3>
+                    <p>Foydalanuvchi quyidagilarni bajarishi shart:</p>
+                    <ul>
+                        <li>Boshqa foydalanuvchilarga hurmat bilan munosabatda bo'lish</li>
+                        <li>Yolg'on ma'lumot kiritmaslik</li>
+                        <li>Platformani noqonuniy maqsadlarda ishlatmaslik</li>
+                    </ul>
+
+                    <h3>3. Taqiqlangan harakatlar</h3>
+                    <p>Quyidagi harakatlar qat'iyan taqiqlanadi:</p>
+                    <ul>
+                        <li>Spam yuborish</li>
+                        <li>Virusli dasturlar tarqatish</li>
+                        <li>Boshqa foydalanuvchilarning akkauntlarini buzish</li>
+                        <li>Nosozliklardan foydalanish</li>
+                    </ul>
+
+                    <h3>4. Intellektual mulk</h3>
+                    <p>Platforma dizayni, kod va kontenti bizning intellektual mulkimizdir.</p>
+
+                    <h3>5. Mas'uliyatni cheklash</h3>
+                    <p>Platforma:</p>
+                    <ul>
+                        <li>Ish beruvchilar va nomzodlar o'rtasidagi munosabatlar uchun javobgar emas</li>
+                        <li>Foydalanuvchilar kiritgan ma'lumotlar to'g'riligini kafolatlamaydi</li>
+                        <li>Force majeure holatlarida javobgar emas</li>
+                    </ul>
+
+                    <h3>6. Shartlarni o'zgartirish</h3>
+                    <p>Biz ushbu shartlarni istalgan vaqtda o'zgartirish huquqini o'zida saqlaymiz. O'zgarishlar platforma orqali e'lon qilinadi.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-primary" onclick="closePrivacyModal()">Tushunarli</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -1030,6 +1307,50 @@
                     });
                 }
             });
+        });
+
+        // Modal functions
+        function openPrivacyModal() {
+            document.getElementById('privacyModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePrivacyModal() {
+            document.getElementById('privacyModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            if (window.event && window.event.target) {
+                window.event.target.classList.add('active');
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('privacyModal');
+            if (event.target == modal) {
+                closePrivacyModal();
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closePrivacyModal();
+            }
         });
     </script>
 </body>

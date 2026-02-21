@@ -7,6 +7,7 @@ class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Ism'}))
     last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Familiya'}))
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-input', 'placeholder': 'Email'}))
+    role = forms.ChoiceField(choices=User.ROLE_CHOICES, initial='candidate', widget=forms.RadioSelect(attrs={'class': 'role-select'}))
     
     consent_privacy = forms.BooleanField(required=True, widget=forms.CheckboxInput(attrs={'class': 'checkbox-input'}), label="Maxfiylik siyosatiga roziman")
     consent_data_processing = forms.BooleanField(required=True, widget=forms.CheckboxInput(attrs={'class': 'checkbox-input'}), label="Ma'lumotlarim qayta ishlanishiga roziman")

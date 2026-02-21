@@ -10,7 +10,7 @@ class User(AbstractUser):
         ("employer","Ish beruvchi"),
         ("admin","Admin")
     )
-    role = models.CharField(max_length=20,choices=ROLE_CHOICES)
+    role = models.CharField(max_length=20,choices=ROLE_CHOICES, default='candidate')
     phone = models.CharField(max_length=20,blank=True,null=True)
     consent_given = models.BooleanField(default=False)
     consent_date = models.DateTimeField(blank=True,null=True)

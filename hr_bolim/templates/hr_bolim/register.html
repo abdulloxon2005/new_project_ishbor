@@ -521,7 +521,7 @@
 
                     <div class="role-cards">
                         <label class="role-card" onclick="selectRole('candidate')">
-                            <input type="radio" name="role" value="candidate" style="display:none;" checked>
+                            <input type="radio" name="role" value="candidate" style="display:none;">
                             <div class="role-icon">
                                 <i class="fas fa-user-graduate"></i>
                             </div>
@@ -613,7 +613,7 @@
                     <div class="checkbox-wrapper">
                         {{ form.consent_privacy }}
                         <label class="checkbox-label" for="id_consent_privacy">
-                            Men saytning <a onclick="openModal('privacyModal')">Maxfiylik siyosati</a> bilan tanishdim va roziman.
+                            Men saytning <a onclick="openModal('privacyModal')">Maxfiylik siyosati</a> va <a onclick="openModal('termsModal')">Foydalanish shartlari</a> bilan tanishdim va roziman.
                         </label>
                     </div>
                     {% if form.consent_privacy.errors %} <div class="errorlist">{{ form.consent_privacy.errors.0 }}</div> {% endif %}
@@ -748,8 +748,8 @@
                 consentCheckbox.classList.add('custom-checkbox');
             }
             
-            // Initialize selection
-            selectRole('candidate'); // Default
+            // Initialize selection - let user choose
+            // selectRole('candidate'); // Removed default
 
             // If backend errors, go to step 2
             {% if form.errors %}
