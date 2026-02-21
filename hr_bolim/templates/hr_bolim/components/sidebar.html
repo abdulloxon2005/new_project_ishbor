@@ -372,9 +372,12 @@
             </div>
         </div>
         <div class="sidebar-actions">
-            <a href="{% url 'logout' %}" class="sidebar-action-btn sidebar-action-logout">
-                <i class="fas fa-sign-out-alt"></i> Chiqish
-            </a>
+            <form method="post" action="{% url 'logout' %}" style="margin:0;">
+                {% csrf_token %}
+                <button type="submit" class="sidebar-action-btn sidebar-action-logout" style="border:none; cursor:pointer;">
+                    <i class="fas fa-sign-out-alt"></i> Chiqish
+                </button>
+            </form>
         </div>
     </div>
 

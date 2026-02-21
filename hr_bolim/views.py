@@ -1119,9 +1119,9 @@ def employer_interviews(request):
     }
     return render(request, 'hr_bolim/employer/interviews.html', context)
 
-# ================================================================
+
 # ADMIN VIEWS
-# ================================================================
+
 
 @login_required
 def admin_dashboard(request):

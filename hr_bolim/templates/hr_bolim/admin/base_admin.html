@@ -99,7 +99,7 @@
                     <a href="{% url 'home' %}" class="text-gray-500 hover:text-gray-700 text-sm">
                         <i class="fas fa-home mr-1"></i>Asosiy
                     </a>
-                    <a href="{% url 'logout' %}" class="text-gray-500 hover:text-gray-700 text-sm">
+                    <a href="{% url 'logout' %}" id="admin-logout-link" class="text-gray-500 hover:text-gray-700 text-sm" style="cursor: pointer;">
                         <i class="fas fa-sign-out-alt mr-1"></i>Chiqish
                     </a>
                 </div>
@@ -144,5 +144,23 @@
             </main>
         </div>
     </div>
+
+    <!-- Hidden logout form (submitted via JS when logout link is clicked) -->
+    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display:none;">{% csrf_token %}</form>
+
+    <script>
+        // Handle logout form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutLink = document.getElementById('admin-logout-link');
+            const logoutForm = document.getElementById('logout-form');
+            
+            if (logoutLink && logoutForm) {
+                logoutLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logoutForm.submit();
+                });
+            }
+        });
+    </script>
 </body>
 </html>

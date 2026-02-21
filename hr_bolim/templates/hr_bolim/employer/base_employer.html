@@ -33,7 +33,8 @@
                 <a href="{% url 'employer_profile' %}" class="{% if request.resolver_match.url_name == 'employer_profile' %}nav-link-active{% endif %}" style="text-decoration: none; color: #666; font-size: 0.95rem; padding: 0.5rem 1rem; border-bottom: {% if request.resolver_match.url_name == 'employer_profile' %}3px solid #3b82f6{% else %}none{% endif %};">
                     Profil
                 </a>
-                <a href="{% url 'logout' %}" style="text-decoration: none; color: #dc2626; font-size: 0.95rem; padding: 0.5rem 1rem;">
+                <!-- Logout link - will be intercepted by JavaScript to submit POST form -->
+                <a href="{% url 'logout' %}" id="logout-link" style="text-decoration: none; color: #dc2626; font-size: 0.95rem; padding: 0.5rem 1rem; cursor: pointer;">
                     Chiqish
                 </a>
             </div>
@@ -95,6 +96,26 @@
         </main>
     </div>
 </div>
+
+<!-- Hidden logout form for POST request -->
+<form id="logout-form" action="{% url 'logout' %}" method="post" style="display:none;">
+    {% csrf_token %}
+</form>
+
+<script>
+    // Handle logout form submission
+    document.addEventListener('DOMContentLoaded', function() {
+        const logoutLink = document.getElementById('logout-link');
+        const logoutForm = document.getElementById('logout-form');
+        
+        if (logoutLink && logoutForm) {
+            logoutLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                logoutForm.submit();
+            });
+        }
+    });
+</script>
 
 <style>
     .nav-link-active {

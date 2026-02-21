@@ -757,7 +757,16 @@
                 <div class="nav-menu">
                     {% if user.is_authenticated %}
                          <span class="nav-link">Salom, {{ user.first_name }}</span>
-                                 <a href="{% url 'logout' %}" class="btn-primary" style="background:none; border:none; color:var(--text-dark); padding:0; font:inherit; cursor:pointer;" onmouseover="this.style.color='var(--primary-blue)'" onmouseout="this.style.color='var(--text-dark)'">Chiqish</a>
+                                 <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" 
+                                        class="btn-primary"
+                                        style="background:none; border:none; color:var(--text-dark); padding:0; font:inherit; cursor:pointer;"
+                                        onmouseover="this.style.color='var(--primary-blue)'"
+                                        onmouseout="this.style.color='var(--text-dark)'">
+                                        Chiqish
+                                    </button>
+                                </form>
                          {% if user.role == 'candidate' %}
                              <a href="{% url 'candidate_dashboard' %}" class="btn-primary">Kabinet</a>
                          {% elif user.role == 'employer' %}
