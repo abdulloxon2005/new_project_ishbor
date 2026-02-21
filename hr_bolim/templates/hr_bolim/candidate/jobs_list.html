@@ -522,6 +522,7 @@
                                 {% else %}
                                     Kompaniya
                                 {% endif %}
+                                {% endif %}
                             </span>
                             <span>
                                 <i class="fas fa-map-marker-alt"></i> 
@@ -531,6 +532,7 @@
                                     {{ job.location }}
                                 {% else %}
                                     Shahar ko'rsatilmagan
+                                {% endif %}
                                 {% endif %}
                             </span>
                         </div>
@@ -546,6 +548,7 @@
                     {% else %}
                         <span class="badge" style="background: #f3f4f6; color: #374151;">{{ job.get_employment_type_display }}</span>
                     {% endif %}
+                    {% endif %}
                 </div>
 
                 <div class="job-description">
@@ -555,6 +558,7 @@
                         {{ job.responsibilities|striptags|truncatewords:25 }}
                     {% else %}
                         Izohlar yo'q
+                    {% endif %}
                     {% endif %}
                 </div>
 

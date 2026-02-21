@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import User, Job, Department, CandidateProfile, Application, SavedJob, Experience, Education, Resume, PrivacyPolicy, DataDeletionRequest, Message, Company, CompanyProfile, EmployerJob, CandidateApplication, Interview, Contact, ConsentLog
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, CompanyRegistrationForm, CompanyProfileForm, EmployerJobForm, CandidateApplicationForm, InterviewForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods
 from django.db.models import Q, Count, Avg
 from types import SimpleNamespace
 from django.utils import timezone
@@ -164,35 +163,7 @@ class CustomLoginView(LoginView):
     template_name = 'hr_bolim/login.html'
     authentication_form = CustomAuthenticationForm
 
-    def form_valid(self, form):
-        # Clear any existing messages completely
-        storage = messages.get_messages(self.request)
-        storage.used = True
-        
-        # Call parent form_valid
-        response = super().form_valid(form)
-        
-        # Add appropriate success message based on user role
-        if hasattr(self, 'request') and self.request.user.is_authenticated:
-            user_name = self.request.user.get_full_name() or self.request.user.email
-            if self.request.user.role == 'candidate':
-                messages.success(self.request, f"Xush kelibsiz, {user_name}!")
-            elif self.request.user.role == 'employer':
-                messages.success(self.request, f"Xush kelibsiz, {user_name}!")
-            elif self.request.user.role == 'admin' or self.request.user.is_superuser:
-                messages.success(self.request, f"Admin panelga xush kelibsiz, {user_name}!")
-        
-        return response
-
     def get_success_url(self):
-        # Check if user is employer and redirect to dashboard page
-        if hasattr(self, 'request') and self.request.user.is_authenticated:
-            if self.request.user.role == 'employer':
-                return '/employer/dashboard/'
-            elif self.request.user.role == 'candidate':
-                return '/candidate/dashboard/'
-            elif self.request.user.role == 'admin' or self.request.user.is_superuser:
-                return '/admin-panel/dashboard/'
         return '/dashboard/'
 
 @login_required
@@ -1147,22 +1118,6 @@ def employer_interviews(request):
         'company': company,
     }
     return render(request, 'hr_bolim/employer/interviews.html', context)
-
-@require_http_methods(["GET", "POST"])
-def custom_logout(request):
-    """Custom logout view to handle both GET and POST requests"""
-    # Clear any existing messages
-    storage = messages.get_messages(request)
-    storage.used = True
-    
-    # Perform logout
-    logout(request)
-    
-    # Add logout success message
-    messages.success(request, 'Tizimdan muvaffaqiyatli chiqdingiz!')
-    
-    # Redirect to login page instead of home
-    return redirect('login')
 
 # ================================================================
 # ADMIN VIEWS

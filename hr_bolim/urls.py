@@ -7,9 +7,9 @@ from .views import (
     employer_dashboard, employer_register, employer_register_public, employer_profile, employer_jobs, create_job, edit_job, delete_job,
     employer_applications, application_detail, schedule_interview, employer_statistics, employer_messages, employer_chat_detail, employer_interviews,
     # Admin views
-    admin_dashboard, admin_companies, admin_gdpr_logs, admin_data_requests, admin_complaints,
-    custom_logout,
+    admin_dashboard, admin_companies, admin_gdpr_logs, admin_data_requests, admin_complaints
 )
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('', home_view, name='home'),
@@ -19,7 +19,7 @@ urlpatterns = [
     # Auth Pages
     path('login/', CustomLoginView.as_view(), name='login'),
     path('register/', register_view, name='register'),
-    path('logout/', custom_logout, name='logout'),
+    path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
 
     # Unified Dashboard
     path('dashboard/', dashboard_view, name='dashboard'),
